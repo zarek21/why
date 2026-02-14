@@ -2,47 +2,44 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    [Header("Objetivo")]
-    [SerializeField] private Transform target; // Arrastraremos el "BuildingManager" aquí
-    [SerializeField] private float smoothSpeed = 2.0f; // Qué tan rápido sigue (menor = más suave)
-    
-    [Header("Offset")]
-    [SerializeField] private float heightOffset = 2.0f; // Para que la cámara mire un poco por encima del último piso
-    [SerializeField] private float zoomOutFactor = 0.5f; // Cuánto se aleja por cada piso nuevo
+    [Header("Referencias")]
+    [SerializeField] private Transform target; // Arrastra tu BuildingManager aquí
 
-    // Estado
-    private float currentHeight = 0f;
-    private Vector3 initialPosition;
+    [Header("Configuración Simple")]
+    [Tooltip("¿Cuánto mide exactamente tu piso? (ej. 3)")]
+    [SerializeField] private float alturaPorPiso = 3.0f; 
+    
+    [Tooltip("Qué tan suave se mueve (5 es buen número)")]
+    [SerializeField] private float smoothSpeed = 5.0f; 
+
+    private Vector3 posicionInicial;
 
     private void Start()
     {
-        initialPosition = transform.position;
+        // 1. Guardamos la posición exacta donde pusiste la cámara en el editor.
+        // Esta será nuestra altura "Cero".
+        posicionInicial = transform.position;
     }
 
     private void LateUpdate()
     {
         if (target == null) return;
 
-        // 1. Calculamos la altura objetivo basada en los pisos actuales
-        // Necesitamos que BuildingManager nos diga cuántos pisos hay. 
-        // Por ahora, usaremos la posición Y del último hijo del BuildingManager como referencia rápida.
-        
-        float targetY = 0f;
-        if (target.childCount > 0)
-        {
-            // Busca el piso más alto
-            targetY = target.GetChild(target.childCount - 1).position.y;
-        }
+        // 2. ¿Cuántos pisos REALES hay construidos?
+        // Restamos 1 porque el primer hijo siempre es el cimiento base.
+        int pisosConstruidos = target.childCount - 1;
 
-        // 2. Calculamos la nueva posición de la cámara
-        Vector3 targetPosition = initialPosition;
-        targetPosition.y += targetY * 0.5f + heightOffset; // Subimos la mitad de lo que crece el edificio
-        targetPosition.z -= targetY * zoomOutFactor; // Nos alejamos un poco para mantener la perspectiva
+        // Seguridad: Si aún no se crea el cimiento, no bajamos de 0.
+        if (pisosConstruidos < 0) pisosConstruidos = 0;
 
-        // 3. Suavizado (Lerp)
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * smoothSpeed);
-        
-        // 4. Opcional: Que siempre mire un poco hacia arriba
-        // transform.LookAt(target.position + Vector3.up * targetY); 
+        // 3. Calculamos la altura matemática exacta
+        // Altura "Cero" + (Cantidad de pisos extra * Lo que mide un piso)
+        float alturaDeseadaY = posicionInicial.y + (pisosConstruidos * alturaPorPiso);
+
+        // 4. Creamos el punto de destino (Solo movemos la Y)
+        Vector3 destino = new Vector3(posicionInicial.x, alturaDeseadaY, posicionInicial.z);
+
+        // 5. Movimiento suave hacia el destino
+        transform.position = Vector3.Lerp(transform.position, destino, Time.deltaTime * smoothSpeed);
     }
 }
