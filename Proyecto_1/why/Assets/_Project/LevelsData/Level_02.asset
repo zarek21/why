@@ -15,8 +15,205 @@ MonoBehaviour:
   maxLives: 2
   levelIndex: 2
   levelName: "Alba\xF1il Medio"
-  targetFloors: 10
-  baseTimePerWord: 5
-  minWordLength: 8
-  maxWordLength: 8
+  targetFloors: 50
+  baseTimePerWord: 4
   scoreBonus: 100
+  wordPool:
+  - DOCTOR SIMI
+  - MEDIO METRO
+  - PESO PLUMA
+  - Y LA QUESO
+  - TRAKA SI
+  - ES DE CHILL
+  - VETE DE HERE
+  - PURO BELICON
+  - ANDO BIEN
+  - NO TE TOCO
+  - UNA GATITA
+  - QUE AGUSTIC
+  - PINTAMOS TOD
+  - SE TE BORRO
+  - MI BEBITO
+  - FIU FIU
+  - MOTOMAMI
+  - DESPECHA
+  - SAOKO PAPI
+  - BIZCOCHITO
+  - LANA DEL REY
+  - TAYLOR SWIFT
+  - KAROL G
+  - BICHOTA
+  - LA ROSALIA
+  - BAD BUNNY
+  - UN VERANO
+  - SIN TI
+  - TITIME PREG
+  - ME PORTO
+  - BONITO
+  - OJITOS LIND
+  - EFECTO
+  - NEVERITA
+  - MOSCOW MULE
+  - PARTY
+  - TAROT
+  - ANDREA
+  - OTRO ATARDEC
+  - DOS MIL 16
+  - CALLAITA
+  - DAKITI
+  - LA NOCHE
+  - YONAGUNI
+  - AMORFODA
+  - SOY PEOR
+  - CHAMBAE
+  - ELLA PERREA
+  - SAFAERA
+  - LA CANCION
+  - VETE
+  - IGNORANTES
+  - LA DIFICIL
+  - PERO YA NO
+  - SOLIA
+  - ESTAMOS BIEN
+  - MIA
+  - I LIKE IT
+  - TE BOTE
+  - MAYORES
+  - SIN PIJAMA
+  - RAM PAM PAM
+  - MAMIII
+  - PROVENZA
+  - CAIRO
+  - X SI VOLVEM
+  - TQG
+  - MI EX TENIA
+  - QLONA
+  - LABIOS MORD
+  - HELLOKITTY
+  - KUROMI
+  - MY MELODY
+  - CINNAMOROLL
+  - POMPOMPURIN
+  - SANRIO
+  - KAWAII
+  - ANIME
+  - MANGA
+  - OTAKU
+  - COSPLAY
+  - WAIFU
+  - HUSBANDO
+  - SENPAI
+  - ONII CHAN
+  - BAKA
+  - YAMETE
+  - KUDASAI
+  - ARA ARA
+  - UWU OWO
+  - SKIBIDI TOI
+  - CAMERA MAN
+  - SPEAKER MAN
+  - TV MAN
+  - TITAN TV
+  - G MAN
+  - DAFUQBOOM
+  - OHIO
+  - RIZZ
+  - GYATT
+  - FANUM TAX
+  - SIGMA MALE
+  - GIGACHAD
+  - ALPHA MALE
+  - BETA MALE
+  - OMEGA MALE
+  - LOOKSMAX
+  - MEWING
+  - MOGGING
+  - IT GIRL
+  - PICK ME
+  - NPC
+  - MAIN CHAR
+  - POV
+  - GRWM
+  - OOTD
+  - HAUL
+  - UNBOXING
+  - ASMR
+  - MUKBANG
+  - STORY TIME
+  - CHISME TIME
+  - GET READY
+  - WITH ME
+  - A DAY IN
+  - MY LIFE
+  - PHOTO DUMP
+  - DUMP
+  - RECAP
+  - THROWBACK
+  - FLASHBACK
+  - MEMORIES
+  - VIBES
+  - MOOD
+  - GOALS
+  - COUPLE
+  - BESTIES
+  - SQUAD
+  - FAMILY
+  - FRIENDS
+  - LOVE
+  - HATE
+  - CRUSH
+  - EX
+  - TOXIC
+  - RED FLAG
+  - GREEN FLAG
+  - BEIGE FLAG
+  - GHOSTING
+  - GHOST
+  - BREADCRUMB
+  - LOVE BOMB
+  - GASLIGHT
+  - GATEKEEP
+  - GIRLBOSS
+  - MANSPLAIN
+  - WOKE
+  - CANCELLED
+  - CANCELADO
+  - FUNADISIMO
+  - BASADISIMO
+  - GOD
+  - ZZZ
+  - GODINES
+  - CHAVORRUCO
+  - MIRREY
+  - LOBUKI
+  - FRESA
+  - NACO
+  - CHAKAL
+  - ALUCIN
+  - BUCHON
+  - BELICO
+  - CORRIDOS
+  - TUMBADOS
+  - NATANAEL
+  - JUNIOR H
+  - FUERZA REG
+  - ESLABON
+  - ARMADO
+  - GABITO
+  - BALLESTEROS
+  - CHINO PACAS
+  - CALLE 24
+  - HERENCIA
+  - PATRONES
+  - LADY GAGA
+  - POKER FACE
+  - BAD ROMANCE
+  - TELEPHONE
+  - ALEJANDRO
+  - JUDAS
+  - BORN THIS
+  - WAY
+  - APPLAUSE
+  - SHALLOW
+  - RAIN ON ME
+  - BLOODY MARY

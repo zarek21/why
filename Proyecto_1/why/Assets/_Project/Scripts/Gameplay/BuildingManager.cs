@@ -18,7 +18,13 @@ public class BuildingManager : MonoBehaviour
     [Header("Efectos Visuales")]
     [SerializeField] private GameObject dustEffectPrefab; 
 
+    [Header("Configuración de Spawn")]
+    [Tooltip("Altura desde donde cae el piso al instanciarse")]
+    [SerializeField] private float spawnHeightOffset = 5f;
+
     private List<GameObject> activeFloors = new List<GameObject>(); 
+    public int ActiveFloorCount => activeFloors.Count; // Expose for Camera
+    private Stack<GameObject> floorPool = new Stack<GameObject>(); // Object Pool
     private GameObject foundationInstance; 
 
     private void Start()
@@ -38,11 +44,11 @@ public class BuildingManager : MonoBehaviour
         float currentY = transform.position.y + foundationHeight + (activeFloors.Count * roomHeight);
         Vector3 spawnPos = new Vector3(transform.position.x, currentY, transform.position.z);
 
-        GameObject newFloor = Instantiate(roomPrefab, spawnPos, Quaternion.identity);
+        GameObject newFloor = GetFloorFromPool(spawnPos);
         newFloor.transform.SetParent(transform);
 
-        newFloor.transform.position += Vector3.up * 5f; 
-        newFloor.transform.DOMoveY(spawnPos.y, 0.4f).SetEase(Ease.OutBounce);
+        newFloor.transform.position += Vector3.up * spawnHeightOffset; 
+        newFloor.transform.DOMoveY(spawnPos.y, 0.4f).SetEase(Ease.OutBounce).SetLink(newFloor);
 
         if (dustEffectPrefab != null)
         {
@@ -78,7 +84,29 @@ public class BuildingManager : MonoBehaviour
 
         activeFloors.RemoveAt(activeFloors.Count - 1);
 
-        floorToRemove.transform.DOShakePosition(0.2f, 0.5f);
-        Destroy(floorToRemove, 0.2f);
+        // Tween safety: Shake then return to pool
+        floorToRemove.transform.DOShakePosition(0.2f, 0.5f).SetLink(floorToRemove).OnComplete(() => ReturnFloorToPool(floorToRemove));
+    }
+
+    private GameObject GetFloorFromPool(Vector3 position)
+    {
+        if (floorPool.Count > 0)
+        {
+            GameObject floor = floorPool.Pop();
+            floor.transform.position = position;
+            floor.transform.rotation = Quaternion.identity;
+            floor.SetActive(true);
+            return floor;
+        }
+        else
+        {
+            return Instantiate(roomPrefab, position, Quaternion.identity);
+        }
+    }
+
+    private void ReturnFloorToPool(GameObject floor)
+    {
+        floor.SetActive(false);
+        floorPool.Push(floor);
     }
 }

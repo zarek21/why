@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [CreateAssetMenu(fileName = "NewLevelData", menuName = "WhyGame/Level Data", order = 1)]
 public class LevelData : ScriptableObject
@@ -14,10 +15,165 @@ public class LevelData : ScriptableObject
     public int targetFloors;       
     public float baseTimePerWord;   
     
-    [Header("Restricciones de Palabras")]
-    public int minWordLength;       
-    public int maxWordLength;       
+
     
     [Header("Economía")]
     public int scoreBonus;          
+
+    [Header("Diccionario")]
+    [TextArea(3, 10)]
+    public List<string> wordPool = new List<string>();
+
+    [ContextMenu("Generar Palabras")]
+    public void GenerateWords()
+    {
+        wordPool.Clear();
+        switch (levelIndex)
+        {
+            case 1: // Nivel 1: 50 pisos -> 80 palabras (8 letras)
+                wordPool.AddRange(GetWordsLevel1());
+                break;
+            case 2: // Nivel 2: 150 pisos -> 200 palabras (12 letras)
+                wordPool.AddRange(GetWordsLevel2());
+                break;
+            case 3: // Nivel 3: 200 pisos -> 300 palabras (15-20 letras)
+                wordPool.AddRange(GetWordsLevel3());
+                break;
+        }
+    }
+
+    private string[] GetWordsLevel1()
+    {
+        return new string[]
+        {
+            "SKIBIDI", "COQUETTE", "POTAXIO", "ELTILIN", "ETESECH", "NASHE", "TURBIO", "BESTIE", 
+            "SOPORTA", "LAQUESO", "RESOLV", "DELULU", "RIZZLER", "SIGMA", "DEVORO", "SERVIDO",
+            "AESTHET", "ICONIC", "PECADO", "FUNADO", "BASADO", "HUMILDE", "CHAMBA", "BECADO",
+            "BEBEST", "BUCHON", "ALUCIN", "TOXICA", "FIONA", "SHREK", "NEVERA", "GATITA",
+            "BELLAK", "PERREO", "SAKEO", "NOSEAS", "SAPO", "CHISME", "FUNAR", "CRINGE",
+            "BROTHER", "PANA", "COMPA", "MAYATE", "JALE", "TROCA", "FIRME", "SIMON",
+            "CAMARA", "PIVOTE", "CHANT", "CHIDO", "CHALE", "NETA", "WEY", "NO MAMES",
+            "VERQ", "NMMMS", "LOL", "OMG", "XD", "UWU", "7U7", "F", "YOLO",
+            "SWAG", "POSE", "FOTO", "INSTA", "TIKTOK", "TREND", "VIRAL", "LIVE",
+            "STORY", "REAL", "FAKE", "DRAMA", "TEA", "SPILL", "SLAY", "QUEEN"
+        };
+    }
+
+    private string[] GetWordsLevel2()
+    {
+        return new string[]
+        {
+            "DOCTOR SIMI", "MEDIO METRO", "PESO PLUMA", "Y LA QUESO", "TRAKA SI", "ES DE CHILL",
+            "VETE DE HERE", "PURO BELICON", "ANDO BIEN", "NO TE TOCO", "UNA GATITA", "QUE AGUSTIC",
+            "PINTAMOS TOD", "SE TE BORRO", "MI BEBITO", "FIU FIU", "MOTOMAMI", "DESPECHA",
+            "SAOKO PAPI", "BIZCOCHITO", "LANA DEL REY", "TAYLOR SWIFT", "KAROL G", "BICHOTA",
+            "LA ROSALIA", "BAD BUNNY", "UN VERANO", "SIN TI", "TITIME PREG", "ME PORTO",
+            "BONITO", "OJITOS LIND", "EFECTO", "NEVERITA", "MOSCOW MULE", "PARTY",
+            "TAROT", "ANDREA", "OTRO ATARDEC", "DOS MIL 16", "CALLAITA", "DAKITI",
+            "LA NOCHE", "YONAGUNI", "AMORFODA", "SOY PEOR", "CHAMBAE", "ELLA PERREA",
+            "SAFAERA", "LA CANCION", "VETE", "IGNORANTES", "LA DIFICIL", "PERO YA NO",
+            "SOLIA", "ESTAMOS BIEN", "MIA", "I LIKE IT", "TE BOTE", "MAYORES",
+            "SIN PIJAMA", "RAM PAM PAM", "MAMIII", "PROVENZA", "CAIRO", "X SI VOLVEM",
+            "TQG", "MI EX TENIA", "QLONA", "LABIOS MORD", "HELLOKITTY", "KUROMI",
+            "MY MELODY", "CINNAMOROLL", "POMPOMPURIN", "SANRIO", "KAWAII", "ANIME",
+            "MANGA", "OTAKU", "COSPLAY", "WAIFU", "HUSBANDO", "SENPAI",
+            "ONII CHAN", "BAKA", "YAMETE", "KUDASAI", "ARA ARA", "UWU OWO",
+            "SKIBIDI TOI", "CAMERA MAN", "SPEAKER MAN", "TV MAN", "TITAN TV", "G MAN",
+            "DAFUQBOOM", "OHIO", "RIZZ", "GYATT", "FANUM TAX", "SIGMA MALE",
+            "GIGACHAD", "ALPHA MALE", "BETA MALE", "OMEGA MALE", "LOOKSMAX", "MEWING",
+            "MOGGING", "IT GIRL", "PICK ME", "NPC", "MAIN CHAR", "POV",
+            "GRWM", "OOTD", "HAUL", "UNBOXING", "ASMR", "MUKBANG",
+            "STORY TIME", "CHISME TIME", "GET READY", "WITH ME", "A DAY IN", "MY LIFE",
+            "PHOTO DUMP", "DUMP", "RECAP", "THROWBACK", "FLASHBACK", "MEMORIES",
+            "VIBES", "MOOD", "GOALS", "COUPLE", "BESTIES", "SQUAD",
+            "FAMILY", "FRIENDS", "LOVE", "HATE", "CRUSH", "EX",
+            "TOXIC", "RED FLAG", "GREEN FLAG", "BEIGE FLAG", "GHOSTING", "GHOST",
+            "BREADCRUMB", "LOVE BOMB", "GASLIGHT", "GATEKEEP", "GIRLBOSS", "MANSPLAIN",
+            "WOKE", "CANCELLED", "CANCELADO", "FUNADISIMO", "BASADISIMO", "GOD",
+            "ZZZ", "GODINES", "CHAVORRUCO", "MIRREY", "LOBUKI", "FRESA",
+            "NACO", "CHAKAL", "ALUCIN", "BUCHON", "BELICO", "CORRIDOS",
+            "TUMBADOS", "NATANAEL", "JUNIOR H", "FUERZA REG", "ESLABON", "ARMADO",
+            "GABITO", "BALLESTEROS", "CHINO PACAS", "CALLE 24", "HERENCIA", "PATRONES",
+            "LADY GAGA", "POKER FACE", "BAD ROMANCE", "TELEPHONE", "ALEJANDRO", "JUDAS",
+            "BORN THIS", "WAY", "APPLAUSE", "SHALLOW", "RAIN ON ME", "BLOODY MARY"
+        };
+    }
+
+    private string[] GetWordsLevel3()
+    {
+        return new string[]
+        {
+            "ATRAPADA EN EL PEO", "MI PRIMERA CHAMBA", "EL DIAVLO LOCO", "QUE BENDICION",
+            "MOMENTO HUMILDE", "EVENTO CANONICO", "PURO DOBLE P", "ELLA BAILA SOLA",
+            "ANDO BIEN BELICON", "CHALE ME DEJO", "SE TE SUBIO EL MUERTO", "PINCHE GOBIERNO",
+            "FIFI DE NACION", "NO TE HAGAS PATO", "YA NO AGUANTO", "ME QUIERO IR",
+            "CUANDO TU MAMA", "POV ERES TU", "SE CANCELA TODO", "SE VA A CAER",
+            "TEMBLOR EN CDMX", "BOLILLO PA SUSTO", "DONDE ESTA CR7", "EL BICHO SIUU",
+            "MESSI CAMPEON", "ARRIBA LA ESPERANZA", "ABUELITA SOY TU NIETO", "SACENSE LAS CHELAS",
+            "VIERNES DE AHORCAR", "RUKALETA CHIDA", "QUE ONDA PERRO", "QUE HONGOS VALEDOR",
+            "CAMARA PIVOTE", "YA SE LA SABEN", "CELULARES Y CARTERAS", "CHOFER LE DIGO",
+            "BAJAN EN LA ESQUINA", "SUBALE SUBALE", "LUGARES DISPONIBLES", "RECORRASE PA ATRAS",
+            "NO SE HAGA BOLAS", "LA LIMOSINA NARA", "METROBUS RETACA", "PANTITLAN HORA PICO",
+            "LINEA 12 DEL METRO", "SE CAYO EL SISTEMA", "INE NO VIGENTE", "TRAMITE DE SAT",
+            "CITA EN EL IMSS", "FILA DE LAS TORTILL", "DONDE ESTAN LAS RUBIAS", "SI YA SABEN COMO",
+            "PA QUE ME INVITAN", "YO NO FUI FUE TETE", "A HUEVO TRIUNFO EL MAL", "CERO MIEDO AL EXITO",
+            "SIN MIEDO AL EXITO", "PAPI ESAS BARRAS", "HAY TALENTO FALTA", "SOLO APOYARLO",
+            "IMAGINEMOS COSAS", "CHINGONAS CARAJO", "NO PUEDO ESTOY", "CHIQUITO BEBE",
+            "UN GATO VOLADOR", "MESA QUE MAS APLAUDA", "ZA ZA ZA YACUZA", "MATADOR MATADOR",
+            "HAY NIVELES ROJO", "QUIERO UN HEROE", "NO CONTABAN CON", "MI ASTUCIA CHESP",
+            "FUE SIN QUERER", "QUERIENDO CHAVO", "ESO ESO ESO", "PI PI PI PI PI",
+            "RON DAMON PAGA", "LA RENTA DON RAMON", "TENIA QUE SER EL", "CHAVO DEL OCHO",
+            "CHANFLE RECONTRA", "SOTANA DEL PADRE", "AMINO ME SIMPATIZAS", "LLEVATELO VIENTO",
+            "ROSA DE GUADALUPE", "AIRECITO MILAGROSO", "COMO DICE EL DICHO", "LO QUE CALLAMOS",
+            "LAS MUJERES CALLAN", "FAMILIA PELUCHE", "POR QUE NO ERES", "UNA NIÑA NORMAL",
+            "BIBI ERES RARA", "LUDOVICO PELUCHE", "FEDERICA DE PELU", "EXCELSA SIRVIENTA",
+            "JUNIOR ADOPTADO", "LUDOVIQUITO BRUT", "CIUDAD PELUCHE", "OIGA MIJO YA PAGUE",
+            "TRAE CAMBIO DE 500", "NO TRAE SUELTO", "A LA VUELTA JOVEN", "LE DEBO UN PESO",
+            "REDONDEO OXXO", "CLIENTE FRECUENTE", "PUNTOS PREMIA", "TARJETA SPIN",
+            "VIKKI ESTA JUGANDO", "MINECRAFT CUBO", "ROBLOX OBREROS", "FORTNITE BAILE",
+            "PASE DE BATALLA", "SKIN LEGENDARIA", "VICTORIA MAGISTRAL", "REVIVEME JETT",
+            "VALORANT TOXICO", "LEAGUE OF LEGEN", "MID OR FEED", "REPORT JUNGLA",
+            "FF AL 15 MIN", "SURRENDER PLS", "GG IZI PICI", "TUTORIAL DE MAQUI",
+            "GRWM PARA IR A", "VER A MI NOVI", "STORYTIME DE COMO", "ME ENGAÑARON",
+            "CON MI MEJOR AMIGA", "FUNADA POR FEA", "CANCELADO POR FEO", "GUAPO PERO FEO",
+            "RESOLVER AMIGA", "COLABOREN CHICAS", "REINA POTAXIE", "NIFE NIFA",
+            "AGUACATE POTAXIO", "CON ARROZ BLANCO", "DIVAFICADA SI", "CUERPAZO CRIMINAL",
+            "FOTO TRAMPA", "FILTRO DE TIKTOK", "CARITA EMPAPADA", "HOMBRE QUE RESUEL",
+            "MUJER DE ALTO VALOR", "HOMBRE DE ALTO VAL", "TEMACH DIJO", "MODO GUERRA",
+            "COMPAS DE HIERRO", "FUERZA BROTHER", "ANIMOO RAZA", "PURO PA DELANTE",
+            "FIERRO PARIENTE", "ARRE LULU", "SAQUEN EL PLAN", "VAMOS POR TAKIS",
+            "UNAS MICHELADAS", "LICUACHELAS TEPITO", "KITTYCHELAS ROSA", "ROTOCELAS TINACO",
+            "YAKULT AZUL", "FRUTSI CONGELADO", "BOING DE MANGO", "TRIANGULO DEL BOING",
+            "PATITO EN LA CABEZA", "POLLITO DE COLOR", "DINOSAURIO PROFES", "TERIANO LOBO",
+            "IDENTIFICO GATO", "SOY UN HELICOPTERO", "APACHE 3000", "COMBATE MORTAL",
+            "FATALITY WINS", "GET OVER HERE", "TOASTY SOUND", "FINISH HIM",
+            "HADOUKEN RYO", "SHORYUKEN KEN", "KAME HAME HA", "GENKI DAMA GOKU",
+            "SUPER SAIYAJIN", "VEGETA PRINCIPE", "INSECTO KAKAROTO", "BULMA CAPSULA",
+            "SEMILLA ERMITAÑO", "NUBE VOLADORA", "BASTON MAGICO", "ESFERAS DEL DRAGON",
+            "SHEN LONG DESEO", "QUIERO SER INMORTAL", "PANTIMEDIAS OOLONG", "MAESTRO ROSHI",
+            "KAME HOUSE ISLA", "TORNEO DE ARTES", "MARTIALES BUDOKAI", "TENKAICHI 3",
+            "GOKU LE GANA", "SAITAMA CALVO", "ONE PUNCH MAN", "HEROE POR DIVERS",
+            "CAZADOR DE DEMON", "TANJIRO KAMADO", "NEZUKO CHAN", "ZENITSU LLORON",
+            "INOSUKE JABALI", "PILAR DEL FUEGO", "RENGOKU DONAS", "AKAZA LUNA SUP",
+            "LUFFY REY PIRATA", "SOMBRERO DE PAJA", "ZORO PERDIDO", "NAMI NAVEGANTE",
+            "SANJI COCINERO", "CHOPPER MEDICO", "ROBIN ARQUEOLOGA", "FRANKY CYPHER",
+            "BROOK MUSICO", "JINBE TIMONEL", "GEAR FIFTH NIKA", "FRUTA DEL DIABLO",
+            "GOMA GOMA NO", "HAKI DEL REY", "ONE PIECE EXISTE", "BARBA BLANCA",
+            "ACE PORTGAS D", "SABO REVOLUCION", "MARINA GOV", "GOROSEI ANCIAN",
+            "IM SAMA VACIO", "SIGLO VACIO", "PONEGLYPH ROJO", "LAUG TALE ISLA",
+            "JOY BOY REGRESO", "TAMBOR DE LIBER", "WARRIOR OF LIB", "SUN GOD NIKA",
+            "NARUTO UZUMAKI", "SASUKE UCHIHA", "SAKURA HARUNO", "KAKASHI HATAKE",
+            "RASENGAN VIENTO", "CHIDORI RAYO", "SHARINGAN OJO", "RINNEGAN DIOS",
+            "BYAKUGAN OJO", "JUTSU SEXY", "CLONES DE SOMBRA", "SABIO DE LOS 6",
+            "CAMINOS PAIN", "SHINRA TENSEI", "ALDEA DE LA HOJA", "HOKAGE SUEÑO",
+            "DATTEBAYO SI", "DEVERAS DEVERAS", "QUEDATE EN CASA", "SUSANA DISTANCIA",
+            "LOPEZ GATELL", "CONFERENCIA 7PM", "QUEDATE EN TU CASA", "LAVATE LAS MANOS",
+            "ESTORNUDO ETIQ", "CUBREBOCAS KN95", "GEL ANTIBACTERIAL", "SANA DISTANCIA",
+            "NUEVA NORMALIDAD", "HOME OFFICE", "CLASES EN LINEA", "ZOOM REUNION",
+            "MICROFONO APAGAD", "PRENDE TU CAMARA", "NO TE ESCUCHAS", "SE TRABO TU NET",
+            "INTERNET DE CARTON", "TELMEX INFINITUM", "IZZI FALLANDO", "TOTALPLAY LAG",
+            "PING DE 500MS", "LAG EN EL CEREBRO", "AFK UN MOMENTO", "BRB YA VENGO",
+            "GG WP TEAM", "EZ MID GAP", "JUNGLEI DIFF", "SUPPORT NO WARDS"
+        };
+    }
 }

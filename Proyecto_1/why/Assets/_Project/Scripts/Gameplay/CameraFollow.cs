@@ -3,7 +3,7 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private Transform target; // Arrastra tu BuildingManager aquí
+    [SerializeField] private BuildingManager buildingManager; // Reference specific type
 
     [Header("Configuración Simple")]
     [Tooltip("¿Cuánto mide exactamente tu piso? (ej. 3)")]
@@ -28,10 +28,10 @@ public class CameraFollow : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (target == null) return;
+        if (buildingManager == null) return;
 
         // 1. ¿Cuántos pisos REALES hay construidos?
-        int pisosConstruidos = target.childCount - 1;
+        int pisosConstruidos = buildingManager.ActiveFloorCount;
         if (pisosConstruidos < 0) pisosConstruidos = 0;
 
         // 2. Variables de destino por defecto (Estado Normal de Juego)

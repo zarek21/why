@@ -25,8 +25,9 @@ public class TypingManager : MonoBehaviour
     private float maxTime;
     private float currentTime;
 
-    // Lista temporal (se sobrescribe en Start por el WordBank)
-    private List<string> wordBank = new List<string>(); 
+    // Shuffle Bag Logic
+    private List<string> wordBag = new List<string>(); // La "bolsa" de palabras actual
+    private List<string> masterList = new List<string>(); // Copia maestra del LevelData 
 
     private void Start()
     {
@@ -35,13 +36,18 @@ public class TypingManager : MonoBehaviour
         {
             maxTime = currentLevelData.baseTimePerWord;
 
-            // Pedimos palabras al diccionario global según el nivel
-            wordBank = WordBank.GetWordsForLevel(
-                currentLevelData.minWordLength, 
-                currentLevelData.maxWordLength
-            );
+            // Inicializamos la lista maestra con las palabras del ScriptableObject
+            masterList = new List<string>(currentLevelData.wordPool);
             
-            Debug.Log($"Nivel cargado con {wordBank.Count} palabras disponibles.");
+            if (masterList.Count == 0)
+            {
+                Debug.LogError("¡El LevelData no tiene palabras generadas! Ejecuta 'Generar Palabras' en el Inspector.");
+                masterList.Add("ERROR");
+            }
+
+            RefillBag(); // Llenamos la bolsa inicial
+            
+            Debug.Log($"Nivel cargado. Bolsa inicial con {wordBag.Count} palabras.");
         }
         else
         {
@@ -185,13 +191,43 @@ public class TypingManager : MonoBehaviour
     {
         typedWord = "";
         
-        if (wordBank != null && wordBank.Count > 0)
-            currentWord = wordBank[Random.Range(0, wordBank.Count)];
+        // Si la bolsa está vacía, la rellenamos y barajamos de nuevo
+        if (wordBag.Count == 0)
+        {
+            RefillBag();
+        }
+
+        // Sacamos la última palabra de la bolsa (como sacar una ficha de dominó)
+        if (wordBag.Count > 0)
+        {
+            int lastIndex = wordBag.Count - 1;
+            currentWord = wordBag[lastIndex].ToUpper();
+            wordBag.RemoveAt(lastIndex);
+        }
         
         currentTime = maxTime; 
         
         UpdateDisplay();
         ResetColor(); 
+    }
+
+    private void RefillBag()
+    {
+        wordBag = new List<string>(masterList);
+        Shuffle(wordBag);
+        Debug.Log("¡Bolsa rellenada y barajada!");
+    }
+
+    // Algoritmo Fisher-Yates Shuffle
+    private void Shuffle(List<string> list)
+    {
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int rnd = Random.Range(0, i + 1);
+            string temp = list[i];
+            list[i] = list[rnd];
+            list[rnd] = temp;
+        }
     }
 
     private void UpdateDisplay()

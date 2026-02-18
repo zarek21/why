@@ -24,8 +24,17 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null) 
+        {
+            Instance = this;
+            // Configure DOTween capacity to avoid runtime allocations
+            // Adjust numbers based on your game's needs (Tweeners, Sequences)
+            DOTween.SetTweensCapacity(500, 50); 
+        }
+        else 
+        {
+            Destroy(gameObject);
+        }
     }
     
     private void Start()
