@@ -1,0 +1,7 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement name="MainContainer" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-items: center; justify-content: center;">
+        <ui:Label text="WHY" name="TiitleLabel" style="font-size: 250px; -unity-font-style: bold; -unity-font: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=f35d10cb3227b1a4cbbb053ba790bbb5&amp;type=3#BebasNeue-Regular&quot;); -unity-font-definition: initial; color: rgb(255, 255, 255); margin-top: 50px;" />
+        <ui:VisualElement style="flex-grow: 1; position: relative; width: 300px; justify-content: center; align-self: center; align-content: center; font-size: 10px; height: auto;" />
+        <ui:Label text="PRESS ANY KEY" name="SubtitleLabel" style="font-size: 100px; color: rgb(255, 255, 255); -unity-font: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); -unity-font-definition: initial; margin-top: 0; justify-content: center; align-self: center; margin-left: 2px; margin-bottom: 50px;" />
+    </ui:VisualElement>
+</ui:UXML>
