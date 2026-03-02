@@ -1,58 +1,62 @@
 using UnityEngine;
-using TMPro;
-using UnityEngine.UI;
+using UnityEngine.UIElements; 
 using System.Collections.Generic;
-using DG.Tweening; 
 
 public class TypingManager : MonoBehaviour
 {
     [Header("Referencias")]
     [SerializeField] private BuildingManager buildingManager;
-    [SerializeField] private TextMeshProUGUI wordDisplay;
     [SerializeField] private LevelData currentLevelData; 
-    [SerializeField] private Slider timerBar;
+    [SerializeField] private GameUIManager uiManager; 
+
+    // --- NUEVAS VARIABLES PARA UI TOOLKIT ---
+    private Label wordDisplay;
+    private VisualElement timerFill;
 
     [Header("Feedback Visual")]
     [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color typedColor = Color.green;
-    [SerializeField] private Color errorColor = Color.red;
+    [SerializeField] private Color typedColor  = new Color32(173, 186, 152,255);
+    [SerializeField] private Color errorColor =new Color32(137, 76, 76,255);
 
-    // Estado interno
     private string currentWord = "";
     private string typedWord = "";
-    
-    // Variables de Tiempo
+    private int pisosConstruidos = 0; 
     private float maxTime;
     private float currentTime;
 
-    // Shuffle Bag Logic
-    private List<string> wordBag = new List<string>(); // La "bolsa" de palabras actual
-    private List<string> masterList = new List<string>(); // Copia maestra del LevelData 
+    private List<string> wordBag = new List<string>(); 
+    private List<string> masterList = new List<string>();  
 
     private void Start()
     {
-        // 1. Cargar Configuración de Tiempo y Palabras
+        // 1. OBTENER REFERENCIAS DE UI TOOLKIT
+        if (uiManager != null)
+        {
+            UIDocument uiDoc = uiManager.GetComponent<UIDocument>();
+            VisualElement root = uiDoc.rootVisualElement;
+
+            wordDisplay = root.Q<Label>("WordDisplay");
+            timerFill = root.Q<VisualElement>("TimerFill");
+            
+            // Asegurarnos de que el rich text esté activado por código
+            if (wordDisplay != null) wordDisplay.enableRichText = true;
+        }
+
+        // 2. CONFIGURAR NIVEL
         if (currentLevelData != null)
         {
             maxTime = currentLevelData.baseTimePerWord;
-
-            // Inicializamos la lista maestra con las palabras del ScriptableObject
             masterList = new List<string>(currentLevelData.wordPool);
             
-            if (masterList.Count == 0)
-            {
-                Debug.LogError("¡El LevelData no tiene palabras generadas! Ejecuta 'Generar Palabras' en el Inspector.");
-                masterList.Add("ERROR");
-            }
+            if (masterList.Count == 0) masterList.Add("ERROR");
 
-            RefillBag(); // Llenamos la bolsa inicial
-            
-            Debug.Log($"Nivel cargado. Bolsa inicial con {wordBag.Count} palabras.");
-        }
-        else
-        {
-            maxTime = 5f;
-            Debug.LogError("¡Falta asignar el LevelData en el Inspector!");
+            RefillBag(); 
+
+            if (uiManager != null)
+            {
+                uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
+                uiManager.ActualizarVidas(currentLevelData.maxLives); 
+            }
         }
 
         SetNewWord();
@@ -60,8 +64,8 @@ public class TypingManager : MonoBehaviour
 
     private void Update()
     {
-        // Si el juego terminó, no procesamos nada
         if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        if (Time.timeScale == 0f) return; 
 
         HandleTimer();
         DetectInput();
@@ -71,12 +75,13 @@ public class TypingManager : MonoBehaviour
     {
         currentTime -= Time.deltaTime;
 
-        if (timerBar != null)
+        // --- NUEVA LÓGICA DE BARRA DE TIEMPO CSS ---
+        if (timerFill != null)
         {
-            timerBar.value = currentTime / maxTime;
+            float percent = (currentTime / maxTime) * 100f;
+            timerFill.style.width = new Length(Mathf.Max(0, percent), LengthUnit.Percent);
         }
 
-        // Si se acaba el tiempo, cuenta como error
         if (currentTime <= 0)
         {
             HandleMistake(); 
@@ -92,7 +97,7 @@ public class TypingManager : MonoBehaviour
         {
             char charUpper = char.ToUpper(c);
             
-            if (c == '\b') // Backspace
+            if (c == '\b') 
             {
                 if (typedWord.Length > 0)
                 {
@@ -102,15 +107,11 @@ public class TypingManager : MonoBehaviour
                 continue;
             }
 
-            // --- CORRECCIÓN CRÍTICA ---
-            // Si CheckLetter devuelve TRUE (significa que hubo error o terminó palabra),
-            // detenemos la lectura de teclas en este frame para evitar dobles castigos.
             bool stopProcessing = CheckLetter(charUpper);
             if (stopProcessing) return; 
         }
     }
 
-    // Cambiamos a bool: devuelve True si debemos dejar de procesar input
     private bool CheckLetter(char letter)
     {
         if (currentWord[typedWord.Length] == letter)
@@ -120,41 +121,42 @@ public class TypingManager : MonoBehaviour
             if (typedWord.Length == currentWord.Length)
             {
                 WordCompleted();
-                return true; // Palabra terminada -> Stop Input
+                return true; 
             }
             else
             {
                 UpdateDisplay();
-                return false; // Letra correcta, pero faltan más -> Sigue leyendo
+                return false; 
             }
         }
         else
         {
-            // Error de dedo
             HandleMistake();
-            return true; // Hubo error -> Stop Input inmediatamente
+            return true; 
         }
     }
     
     private void HandleMistake()
     {
-        // 1. Castigo Físico (Piso)
-        if (buildingManager != null) buildingManager.RemoveTopFloor();
+        if (buildingManager != null) 
+        {
+            buildingManager.RemoveTopFloor();
+            if (pisosConstruidos > 0) pisosConstruidos--;
+            if (uiManager != null) uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
+        }
         
-        // 2. Castigo Global (Vida)
-        // NOTA: En tu código anterior lo tenías dos veces. Aquí solo UNA vez.
-        if (GameManager.Instance != null) GameManager.Instance.LoseLife();
+        if (GameManager.Instance != null) 
+        {
+            GameManager.Instance.LoseLife();
+        }
 
-        // 3. Feedback Visual (Shake + Rojo)
-        wordDisplay.color = errorColor;
+        // --- NUEVO FEEDBACK VISUAL UI TOOLKIT ---
+        if (wordDisplay != null)
+        {
+            wordDisplay.style.color = new StyleColor(errorColor);
+            Invoke("ResetColor", 0.3f);
+        }
         
-        // Efecto de Shake con DOTween
-        wordDisplay.rectTransform.DOShakeAnchorPos(0.3f, 20f, 15, 90, false, true);
-
-        // Regresar color a la normalidad
-        Invoke("ResetColor", 0.2f);
-        
-        // 4. Reiniciar palabra y TIEMPO
         SetNewWord(); 
     }
 
@@ -162,27 +164,21 @@ public class TypingManager : MonoBehaviour
     {
         if (GameManager.Instance != null) GameManager.Instance.AddCombo();
 
-        int pisosAConstruir = 1; // Por defecto es 1
-
+        int pisosAConstruir = 1; 
         if (GameManager.Instance != null)
         {
             int combo = GameManager.Instance.currentCombo;
-
-            if (combo >= 15)
-            {
-                pisosAConstruir = 3; 
-            }
-            else if (combo >= 10)
-            {
-                pisosAConstruir = 2; 
-            }
+            if (combo >= 15) pisosAConstruir = 3; 
+            else if (combo >= 10) pisosAConstruir = 2; 
         }
 
-        
         for (int i = 0; i < pisosAConstruir; i++)
         {
             if (buildingManager != null) buildingManager.AddFloor();
+            pisosConstruidos++;
         }
+        
+        if (uiManager != null) uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
         
         SetNewWord();
     }
@@ -191,13 +187,8 @@ public class TypingManager : MonoBehaviour
     {
         typedWord = "";
         
-        // Si la bolsa está vacía, la rellenamos y barajamos de nuevo
-        if (wordBag.Count == 0)
-        {
-            RefillBag();
-        }
+        if (wordBag.Count == 0) RefillBag();
 
-        // Sacamos la última palabra de la bolsa (como sacar una ficha de dominó)
         if (wordBag.Count > 0)
         {
             int lastIndex = wordBag.Count - 1;
@@ -215,10 +206,8 @@ public class TypingManager : MonoBehaviour
     {
         wordBag = new List<string>(masterList);
         Shuffle(wordBag);
-        Debug.Log("¡Bolsa rellenada y barajada!");
     }
 
-    // Algoritmo Fisher-Yates Shuffle
     private void Shuffle(List<string> list)
     {
         for (int i = list.Count - 1; i > 0; i--)
@@ -232,6 +221,8 @@ public class TypingManager : MonoBehaviour
 
     private void UpdateDisplay()
     {
+        if (wordDisplay == null) return;
+        
         string typedPart = $"<color=#{ColorUtility.ToHtmlStringRGB(typedColor)}>{typedWord}</color>";
         string remainingPart = currentWord.Substring(typedWord.Length);
         wordDisplay.text = typedPart + remainingPart;
@@ -239,6 +230,6 @@ public class TypingManager : MonoBehaviour
 
     private void ResetColor()
     {
-        wordDisplay.color = normalColor;
+        if (wordDisplay != null) wordDisplay.style.color = new StyleColor(normalColor);
     }
 }

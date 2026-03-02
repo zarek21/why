@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4e5a7f8472e8d4da12db58812bcf52, type: 3}
   m_Name: Level_02
   m_EditorClassIdentifier: 
-  maxLives: 2
+  maxLives: 3
   levelIndex: 2
   levelName: "Alba\xF1il Medio"
   targetFloors: 50

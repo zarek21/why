@@ -1,0 +1,31 @@
+.apple-button {
+    background-image: none;
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    font-size: 55px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    background-color: rgb(59, 61, 63);
+    border-color: transparent;
+    border-radius: 60px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 50px;
+    padding-right: 50px;
+    -unity-text-align: middle-center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    transition-duration: 0.2s;
+    transition-property: background-color, scale;
+    min-width: 400px;
+    min-height: 150px;
+}
+
+.apple-button:hover {
+    background-color: rgb(137, 137, 137);
+}
+
+.apple-button:active {
+    scale: 1;
+    background-color: rgb(137, 137, 137);
+}

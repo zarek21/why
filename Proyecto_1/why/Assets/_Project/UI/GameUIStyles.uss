@@ -1,0 +1,184 @@
+/* ========================================== */
+/* 1. MODALES (Tutorial y Resultados)       */
+/* ========================================== */
+
+/* FONDOS OSCUROS */
+#TutorialOverlay, #ResultsOverlay {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85); 
+    align-items: center; 
+    justify-content: center; 
+}
+
+/* CAJAS PRINCIPALES GRISES */
+#ModalContainer, #ResultsModal {
+    background-color: rgb(203, 201, 190); 
+    width: 80%; 
+    min-height: 70%; 
+    border-radius: 60px;
+    padding: 60px; 
+    margin: 40px;
+    align-items: center; 
+}
+
+#ModalContainer {
+    justify-content: space-between; 
+}
+
+#ResultsModal {
+    justify-content: center; /* Centra el texto de victoria/derrota en medio */
+}
+
+/* TÍTULOS */
+#TutorialTitle {
+    font-size: 110px; 
+    color:  rgb(59, 61, 63);
+    -unity-font-style: bold;
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    margin-top: 10px;
+    margin-bottom: 20px; 
+}
+
+#ResultTitleLabel {
+    font-size: 250px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+     margin-bottom: 80px; 
+}
+
+/* CAJA DE TEXTO DEL TUTORIAL */
+#TutorialBodyText {
+    background-color: rgb(203, 201, 190)
+    color:  rgb(59, 61, 63);
+    width: 95%; 
+    font-size: 38px; 
+    white-space: normal; 
+    -unity-text-align: middle-center; 
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+}
+
+/* BOTONES */
+#StartLevelButton, #RestartButton {
+    min-width: 400px; 
+    margin-top: 40px; 
+    margin-bottom: 10px;
+}
+
+/* ========================================== */
+/* 2. HUD (Puntos y Vidas)                  */
+/* ========================================== */
+
+#HUDContainer {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    flex-direction: row; 
+    justify-content: space-between; 
+    padding-top: 40px;
+    padding-left: 90px;
+    padding-right: 90px;
+}
+
+.hud-text {
+    font-size: 80px;
+    color: rgb(255, 255, 255);
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.7); 
+}
+
+/* ========================================== */
+/* 3. TEXTO DE COMBO (Animado por CSS)      */
+/* ========================================== */
+
+#ComboLabel {
+    position: absolute;
+    top: 25%; 
+    width: 100%;
+    -unity-text-align: middle-center;
+    font-size: 150px;
+    color: rgb(255, 255, 0); 
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
+    display: none; 
+    
+    /* Magia web: Transición suave para el efecto de "rebote" */
+    transition-duration: 0.15s;
+    transition-property: scale, color;
+}
+
+.combo-pop {
+    scale: 1.3;
+}
+
+/* ========================================== */
+/* 4. GAMEPLAY (Palabra y Temporizador)     */
+/* ========================================== */
+
+#GameplayContainer {
+    position: absolute;
+    width: 100%;
+    bottom: 10%; /* Lo subimos un poco más para dar espacio al nuevo fondo */
+    align-items: center; 
+    justify-content: center;
+}
+
+#WordDisplay {
+    /* --- ESTILOS DE FUENTE EXISTENTES (CON AJUSTE DE TAMAÑO) --- */
+    font-size: 110px; /* Reducido ligeramente de 130px para que quepa bien en la caja */
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
+    margin-bottom: 40px; /* Más separación de la barra de tiempo */
+    letter-spacing: 3px;
+    
+    /* --- NUEVOS ESTILOS PARA CREAR EL FONDOS --- */
+    
+    /* 1. Fondo y Opacidad */
+    /* Usamos el color vino de tus modales para consistencia visual */
+    background-color:  rgb(59, 61, 63);  
+    
+    /* 2. Espaciado Interno (Padding) - CRUCIAL para que parezca botón */
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 80px;  /* Mucho espacio a los lados para palabras largas */
+    padding-right: 80px;
+    
+    /* 3. Bordes Redondeados (estilo Apple) */
+    border-radius: 40px;
+    
+    /* 4. Alineación del texto DENTRO de la caja */
+    -unity-text-align: middle-center;
+    
+    /* 5. Sombra de la caja (no del texto) para dar profundidad 3D */
+    /* Sintaxis: offset-x offset-y blur-radius color */
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
+    
+    /* 6. Un borde sutil opcional para definirlo más */
+    border-width: 3px;
+    border-color: rgba(255, 255, 255, 0.1); /* Blanco muy transparente */
+}
+
+/* El fondo gris de la barra de tiempo */
+#TimerBackground {
+    width: 60%; 
+    height: 30px;
+    background-color: rgb(59, 61, 63); 
+    border-radius: 15px;
+    overflow: hidden; 
+}
+
+/* La barra verde que se va vaciando */
+#TimerFill {
+    width: 100%; 
+    height: 100%;
+    background-color: rgb(173, 186, 152); 
+    border-radius: 15px;
+}
