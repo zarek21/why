@@ -16,7 +16,7 @@ MonoBehaviour:
   levelIndex: 2
   levelName: "Alba\xF1il Medio"
   targetFloors: 50
-  baseTimePerWord: 4
+  baseTimePerWord: 600
   scoreBonus: 100
   wordPool:
   - DOCTOR SIMI

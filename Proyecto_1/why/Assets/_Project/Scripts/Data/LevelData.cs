@@ -30,13 +30,13 @@ public class LevelData : ScriptableObject
         wordPool.Clear();
         switch (levelIndex)
         {
-            case 1: // Nivel 1: 50 pisos -> 80 palabras (8 letras)
+            case 1:
                 wordPool.AddRange(GetWordsLevel1());
                 break;
-            case 2: // Nivel 2: 150 pisos -> 200 palabras (12 letras)
+            case 2:
                 wordPool.AddRange(GetWordsLevel2());
                 break;
-            case 3: // Nivel 3: 200 pisos -> 300 palabras (15-20 letras)
+            case 3:
                 wordPool.AddRange(GetWordsLevel3());
                 break;
         }

@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening; 
+using MoreMountains.Feedbacks; // <-- NUEVO: Para usar Feel
 
 public class BuildingManager : MonoBehaviour
 {
@@ -15,16 +16,20 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] private GameObject foundationPrefab; 
     [SerializeField] private GameObject roomPrefab;       
     
-    [Header("Efectos Visuales")]
+    [Header("Efectos Visuales y Sonoros")]
     [SerializeField] private GameObject dustEffectPrefab; 
+    [Tooltip("Feedback de Feel que se reproducirá al construir un piso")]
+    [SerializeField] private MMF_Player floorBuiltFeedback; 
+    [Tooltip("Feedback de Feel que se reproducirá al destruirse un piso (error)")]
+    [SerializeField] private MMF_Player floorDestroyedFeedback; 
 
     [Header("Configuración de Spawn")]
     [Tooltip("Altura desde donde cae el piso al instanciarse")]
     [SerializeField] private float spawnHeightOffset = 5f;
 
     private List<GameObject> activeFloors = new List<GameObject>(); 
-    public int ActiveFloorCount => activeFloors.Count; // Expose for Camera
-    private Stack<GameObject> floorPool = new Stack<GameObject>(); // Object Pool
+    public int ActiveFloorCount => activeFloors.Count;
+    private Stack<GameObject> floorPool = new Stack<GameObject>();
     private GameObject foundationInstance; 
 
     private void Start()
@@ -54,7 +59,12 @@ public class BuildingManager : MonoBehaviour
         {
             Instantiate(dustEffectPrefab, spawnPos, Quaternion.identity);
         }
-        // -------------------------------------------
+
+        // --- NUEVO: Reproducir Feedback de Feel ---
+        if (floorBuiltFeedback != null)
+        {
+            floorBuiltFeedback.PlayFeedbacks();
+        }
 
         activeFloors.Add(newFloor);
         
@@ -80,11 +90,16 @@ public class BuildingManager : MonoBehaviour
         {
             Instantiate(dustEffectPrefab, floorToRemove.transform.position, Quaternion.identity);
         }
-        // ---------------------------------------------
+
+        // --- NUEVO: Reproducir Feedback de Destrucción (Feel) ---
+        if (floorDestroyedFeedback != null)
+        {
+            floorDestroyedFeedback.PlayFeedbacks();
+        }
 
         activeFloors.RemoveAt(activeFloors.Count - 1);
 
-        // Tween safety: Shake then return to pool
+
         floorToRemove.transform.DOShakePosition(0.2f, 0.5f).SetLink(floorToRemove).OnComplete(() => ReturnFloorToPool(floorToRemove));
     }
 

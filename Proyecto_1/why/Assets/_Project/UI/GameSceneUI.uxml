@@ -12,10 +12,31 @@
             <ui:VisualElement name="TimerFill" style="flex-grow: 1;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="TutorialOverlay" enabled="true" style="flex-grow: 1; top: -2px; bottom: 0; right: 0; left: -1px; display: none;">
+    <ui:VisualElement name="TutorialOverlay" enabled="true" style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0; display: flex; position: absolute;">
         <ui:VisualElement name="ModalContainer" style="flex-grow: 1;">
-            <ui:Label text="How to play?" name="TutorialTitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); margin-top: 25px; color: rgb(59, 61, 63);" />
-            <ui:Label text="🧱 YOUR OBJECTIVE: Build the skyscraper floor by floor before you get fired. Complete the target number of floors to win the level!&#10;&#10;⌨️ HOW TO BUILD: Type the words that appear on the screen before the time runs out. Every word successfully typed adds a new floor.&#10;&#10;⚠️ MISTAKES ARE EXPENSIVE: If you type the wrong letter or the timer hits zero, you will lose a life and the top floor will collapse. If your lives reach 0 or you lose the foundation... it&apos;s a COLLAPSE!&#10;&#10;🔥 COMBOS: Type without mistakes to build a Combo multiplier.&#10;&#10;x5 Combo: Recover a lost life!&#10;x10 Combo or more: Build multiple floors at once!" name="TutorialBodyText" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); color: rgb(59, 61, 63);" />
+            <ui:Label text="How to play?" name="TutorialTitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); margin-top: 25px; color: rgb(59, 61, 63); align-self: flex-end; justify-content: center; align-items: center; align-content: center;" />
+            <ui:ScrollView name="RulesScrollView">
+                <ui:VisualElement name="VisualElement" class="rule-block" style="flex-grow: 1;">
+                    <ui:Label text="1-Type the words on Screen " name="Label" class="rule-subtitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                    <ui:Label text="Look at the slang or phrase displayed on the screen and type it exactly as it appears using your keyboard." name="Label" class="rule-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" class="rule-block" style="flex-grow: 1;">
+                    <ui:Label text="2-Beat the Clock" name="Label" class="rule-subtitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); left: auto;" />
+                    <ui:Label text="Keep an eye on the timer bar! You must finish typing the entire word before your time runs out, or it will count as a mistake." name="Label" class="rule-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" class="rule-block" style="flex-grow: 1;">
+                    <ui:Label text="3-Build your Tower &amp; chain combos" name="Label" class="rule-subtitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                    <ui:Label text="Every time you complete a word correctly, a new floor is added to your tower and your combo goes up. If you maintain a high combo streak (x10 or x15), you will start building multiple floors at once for every word you complete!" name="Label" class="rule-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" class="rule-block" style="flex-grow: 1;">
+                    <ui:Label text="4-Watch Out for Mistakes" name="Label" class="rule-subtitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                    <ui:Label text="Accuracy is key. If you type the wrong letter or let the timer run out, you will lose a life, your combo will reset to zero, and your tower will lose a floor. (Tip: Every 5 combos you get without failing recovers a lost life!)" name="Label" class="rule-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="VisualElement" class="rule-block" style="flex-grow: 1;">
+                    <ui:Label text="5-REACH THE TARGET TO WIN" name="Label" class="rule-subtitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                    <ui:Label text="Keep typing correctly to build your tower higher and higher. You win the level once your tower reaches the target number of floors. But be careful—if you lose all your lives or your floors drop below zero, it&apos;s Game Over!" name="Label" class="rule-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+                </ui:VisualElement>
+            </ui:ScrollView>
             <ui:Button text="START PLAYING" name="StartLevelButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); margin-bottom: 50px;" />
         </ui:VisualElement>
     </ui:VisualElement>

@@ -32,13 +32,13 @@
 
 /* TÍTULOS */
 #TutorialTitle {
-    font-size: 110px; 
-    color:  rgb(59, 61, 63);
+    font-size: 90px; /* <-- REDUCIDO para que quepa todo */
+    color: rgb(59, 61, 63);
     -unity-font-style: bold;
     -unity-font: resource("BebasNeue-Regular");
     -unity-font-definition: initial;
-    margin-top: 10px;
-    margin-bottom: 20px; 
+    margin-top: 0;
+    margin-bottom: 2%; 
 }
 
 #ResultTitleLabel {
@@ -47,25 +47,59 @@
     -unity-font-style: bold;
     -unity-font: resource("BebasNeue-Regular");
     -unity-font-definition: initial;
-     margin-bottom: 80px; 
+    margin-bottom: 80px; 
 }
 
 /* CAJA DE TEXTO DEL TUTORIAL */
-#TutorialBodyText {
-    background-color: rgb(203, 201, 190)
-    color:  rgb(59, 61, 63);
-    width: 95%; 
-    font-size: 38px; 
-    white-space: normal; 
-    -unity-text-align: middle-center; 
+/* --- NUEVO CONTENEDOR SCROLL VIEW --- */
+#RulesScrollView {
+    width: 100%;
+    flex-grow: 1; /* MAGIA: Toma todo el espacio disponible entre el título y el botón */
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+/* --- BLOQUE INDIVIDUAL DE CADA REGLA --- */
+.rule-block {
+    width: 95%; /* Un poco menos del 100% para dejarle espacio a la barra de scroll */
+    margin-bottom: 40px; /* Podemos darle buen espacio de nuevo porque ahora hay scroll */
+    align-items: center; 
+    flex-shrink: 0; 
+}
+
+/* --- SUBTÍTULOS --- */
+.rule-subtitle {
+    font-size: 50px; 
+    color: rgb(59, 61, 63);
+    align-self: flex-start;
+    -unity-font-style: bold;
     -unity-font: resource("BebasNeue-Regular");
     -unity-font-definition: initial;
+    margin: 0;
+    margin-top: 15px;
+    padding: 0;
+}
+
+/* --- CUERPO DE TEXTO --- */
+.rule-text {
+    font-size: 35px; 
+    color: rgb(93, 100, 24);
+    white-space: normal; 
+    max-width: 100%;
+    align-self: flex-start;
+    justify-self: flex-start;
+    -unity-text-align: left;
+    -unity-font: resource("BebasNeue-Regular");
+    -unity-font-definition: initial;
+    padding: 0;
+    margin-bottom: 50px;
+    
 }
 
 /* BOTONES */
 #StartLevelButton, #RestartButton {
     min-width: 400px; 
-    margin-top: 40px; 
+    margin-top: 20px; /* <-- REDUCIDO de 40 a 20 para subir el botón */
     margin-bottom: 10px;
 }
 
@@ -181,4 +215,39 @@
     height: 100%;
     background-color: rgb(173, 186, 152); 
     border-radius: 15px;
+}
+
+/* ========================================== */
+/* 5. ESTILOS DEL SCROLLBAR (Scroll View)     */
+/* ========================================== */
+
+/* Ancho general de la barra vertical y margen para separarla del borde */
+#RulesScrollView .unity-scroller--vertical {
+    width: 18px;
+    margin-right: 8px;
+}
+
+/* 1. Ocultar las flechitas de arriba y abajo (estilo moderno) */
+#RulesScrollView .unity-scroller__low-button,
+#RulesScrollView .unity-scroller__high-button {
+    display: none;
+}
+
+/* 2. El "riel" o fondo de la barra (Tracker) */
+#RulesScrollView .unity-base-slider__tracker {
+    background-color: rgba(59, 61, 63, 0.15); /* Tu gris oscuro, pero muy transparente */
+    border-width: 0; /* Quitamos el borde por defecto de Unity */
+    border-radius: 9px; /* Bordes bien redondeados */
+}
+
+/* 3. La "pastilla" que el jugador arrastra (Dragger) */
+#RulesScrollView .unity-base-slider__dragger {
+    background-color: rgb(59, 61, 63); /* Gris oscuro sólido */
+    border-width: 0;
+    border-radius: 9px;
+}
+
+/* 4. Efecto Hover para que se sienta interactivo */
+#RulesScrollView .unity-base-slider__dragger:hover {
+    background-color: rgb(173, 186, 152); /* Cambia a tu verde militar al pasar el mouse */
 }

@@ -1,49 +1,51 @@
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEngine.SceneManagement; // <-- IMPORTANTE para reiniciar
+using UnityEngine.SceneManagement; 
+using MoreMountains.Feedbacks; // <-- NUEVO: Para usar Feel en la UI
 
 public class GameUIManager : MonoBehaviour
 {
     private UIDocument uiDocument;
     
-    // Tutorial y HUD
     private VisualElement tutorialOverlay;
     private Button startLevelButton;
     private VisualElement hudContainer;
     private Label scoreLabel;
     private Label livesLabel;
 
-    // --- NUEVO: Combo y Resultados ---
     private Label comboLabel;
     private VisualElement resultsOverlay;
     private Label resultTitleLabel;
     private Button restartButton;
-
     private static bool hasSeenTutorial = false; 
+
+    private int oldPisos = -1;
+    private int oldVidas = -1;
+    private int oldCombo = -1;
+
+    [Header("Efectos de Sonido UI (Feel)")]
+    [Tooltip("Sonido general al hacer clic en botones principales")]
+    [SerializeField] private MMF_Player buttonClickFeedback; 
 
     void OnEnable()
     {
         uiDocument = GetComponent<UIDocument>();
         VisualElement root = uiDocument.rootVisualElement;
 
-        // Búsquedas
         tutorialOverlay = root.Q<VisualElement>("TutorialOverlay");
         startLevelButton = root.Q<Button>("StartLevelButton");
         hudContainer = root.Q<VisualElement>("HUDContainer");
         scoreLabel = root.Q<Label>("ScoreLabel");
         livesLabel = root.Q<Label>("LivesLabel");
 
-        // Búsquedas Nuevas
         comboLabel = root.Q<Label>("ComboLabel");
         resultsOverlay = root.Q<VisualElement>("ResultsOverlay");
         resultTitleLabel = root.Q<Label>("ResultTitleLabel");
         restartButton = root.Q<Button>("RestartButton");
 
-        // Eventos
         if (startLevelButton != null) startLevelButton.clicked += OnStartPlayingClicked;
         if (restartButton != null) restartButton.clicked += OnRestartClicked;
 
-        // Estados Iniciales
         if (resultsOverlay != null) resultsOverlay.style.display = DisplayStyle.None;
         if (comboLabel != null) comboLabel.style.display = DisplayStyle.None;
 
@@ -69,6 +71,8 @@ public class GameUIManager : MonoBehaviour
 
     private void OnStartPlayingClicked()
     {
+        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        
         hasSeenTutorial = true; 
         if (tutorialOverlay != null) tutorialOverlay.style.display = DisplayStyle.None;
         if (hudContainer != null) hudContainer.style.display = DisplayStyle.Flex; 
@@ -77,37 +81,43 @@ public class GameUIManager : MonoBehaviour
 
     private void OnRestartClicked()
     {
-        // Reiniciamos la escena actual
-        Time.timeScale = 1f; // Asegurarnos de descongelar
+        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        
+        // Wait a tiny bit (ignore timescale) or just play it normally (it survives scene loads if persistent)
+        Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    // =========================================================
-    // MÉTODOS PÚBLICOS
-    // =========================================================
 
     public void ActualizarPisos(int pisosConstruidos, int metaDePisos)
     {
-        if (scoreLabel != null) scoreLabel.text = $"PISOS: {pisosConstruidos} / {metaDePisos}";
+        if (scoreLabel != null && pisosConstruidos != oldPisos) 
+        {
+            scoreLabel.text = $"PISOS: {pisosConstruidos} / {metaDePisos}";
+            oldPisos = pisosConstruidos;
+        }
     }
 
     public void ActualizarVidas(int vidasRestantes)
     {
-        if (livesLabel != null) livesLabel.text = $"VIDAS: {vidasRestantes}";
+        if (livesLabel != null && vidasRestantes != oldVidas) 
+        {
+            livesLabel.text = $"VIDAS: {vidasRestantes}";
+            oldVidas = vidasRestantes;
+        }
     }
 
-    // --- NUEVAS FUNCIONES PARA EL GAME MANAGER ---
 
     public void MostrarCombo(int comboActual)
     {
-        if (comboLabel == null) return;
+        if (comboLabel == null || comboActual == oldCombo) return;
+        oldCombo = comboActual;
 
         if (comboActual > 1)
         {
             comboLabel.style.display = DisplayStyle.Flex;
             comboLabel.text = $"x{comboActual}!";
 
-            // Lógica de colores basada en tu código anterior
             if (comboActual >= 10)
                 comboLabel.style.color = new StyleColor(Color.red);
             else if (comboActual >= 5)
@@ -115,10 +125,8 @@ public class GameUIManager : MonoBehaviour
             else
                 comboLabel.style.color = new StyleColor(Color.yellow);
 
-            // Efecto de "Rebote" usando CSS Toggle
             comboLabel.AddToClassList("combo-pop");
             
-            // Quitamos la clase a los 0.15s para que vuelva a su tamaño normal
             Invoke("ResetComboPop", 0.15f);
         }
         else
@@ -136,11 +144,9 @@ public class GameUIManager : MonoBehaviour
     {
         if (resultsOverlay == null || resultTitleLabel == null) return;
 
-        // Ocultamos elementos innecesarios
         if (comboLabel != null) comboLabel.style.display = DisplayStyle.None;
         if (hudContainer != null) hudContainer.style.display = DisplayStyle.None;
 
-        // Congelamos el tiempo al terminar
         Time.timeScale = 0f;
 
         resultsOverlay.style.display = DisplayStyle.Flex;

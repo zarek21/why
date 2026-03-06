@@ -113,9 +113,6 @@ public class MenuKeyboardAnim : MonoBehaviour
 
         finalSequence.Join(transform.DOScale(finalScale, transitionDuration).SetEase(Ease.InOutSine));
 
-        // --- LA SOLUCIÓN MÁGICA ---
-        // Usamos AppendCallback en lugar de OnComplete. 
-        // Así el UIManager no lo sobreescribe y el teclado se desbloquea correctamente.
         finalSequence.AppendCallback(() => {
             baseRotation = targetFinalRotation;
             targetHoverRotation = baseRotation;

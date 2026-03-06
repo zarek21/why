@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement; 
 using DG.Tweening;
+using MoreMountains.Feedbacks; // <-- NUEVO: Para sonidos Feel en la UI
 
 public class MainMenuController : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class MainMenuController : MonoBehaviour
 
     [Header("Transición")]
     [SerializeField] private float finalTextFadeDuration = 0.5f;
+
+    [Header("Efectos UI (Feel)")]
+    [Tooltip("Feedback que sonará al dar clic en los botones del menú")]
+    [SerializeField] private MMF_Player buttonClickFeedback; 
 
     [Header("Navegación y Carga")]
     [SerializeField] private string gameSceneName = "GameScene";
@@ -25,7 +30,7 @@ public class MainMenuController : MonoBehaviour
     private VisualElement finalTextContainer;
     
     private VisualElement loadingScreen; 
-    private Label loadingTextLabel; // <-- NUEVO: Referencia al texto animado
+    private Label loadingTextLabel;
     private Button playButton;
     private Button exitButton;
 
@@ -44,7 +49,6 @@ public class MainMenuController : MonoBehaviour
         exitButton = root.Q<Button>("ExitButton"); 
         
         loadingScreen = root.Q<VisualElement>("LoadingScreen");
-        // Buscamos el texto por el nombre que le pusimos en el UI Builder
         loadingTextLabel = root.Q<Label>("LoadingTextLabel"); 
 
         if (playButton != null) playButton.clicked += OnPlayClicked;
@@ -62,7 +66,6 @@ public class MainMenuController : MonoBehaviour
             loadingScreen.style.display = DisplayStyle.None;
         }
         
-        // Vaciamos el texto de carga al iniciar por si acaso
         if (loadingTextLabel != null) loadingTextLabel.text = "";
     }
 
@@ -106,10 +109,11 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // --- LÓGICA DEL BOTÓN DE JUGAR ---
 
     private void OnPlayClicked()
     {
+        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+
         if (string.IsNullOrEmpty(gameSceneName)) return;
 
         playButton.SetEnabled(false);
@@ -130,48 +134,38 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // --- CORRUTINA DE CARGA ASÍNCRONA ---
     private IEnumerator LoadSceneAsync()
     {
-        // 1. Iniciamos la animación de escritura en bucle
         Coroutine typingCoroutine = null;
         if (loadingTextLabel != null)
         {
             typingCoroutine = StartCoroutine(LoadingTextTypingEffect());
         }
 
-        // 2. Aplicamos el retraso artificial de 10 segundos
         yield return new WaitForSeconds(artificialLoadTime);
 
-        // 3. Cargamos la escena de verdad de fondo
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(gameSceneName);
 
-        // Esperamos a que la escena esté lista
         while (!asyncLoad.isDone)
         {
             yield return null;
         }
 
-        // Cuando termina de cargar, detenemos la animación 
         if (typingCoroutine != null) StopCoroutine(typingCoroutine);
     }
 
-    // --- BUCLE DE ANIMACIÓN DE TEXTO ---
     private IEnumerator LoadingTextTypingEffect()
     {
-        while (true) // Bucle infinito hasta que la escena cambie y destruya este objeto
+        while (true)
         {
-            // Tipado letra por letra
             for (int i = 0; i <= fullLoadingText.Length; i++)
             {
                 loadingTextLabel.text = fullLoadingText.Substring(0, i);
                 yield return new WaitForSeconds(loadingTypeSpeed);
             }
             
-            // Pausa con el texto completo
             yield return new WaitForSeconds(0.6f);
             
-            // Borrado del texto para reiniciar el bucle
             loadingTextLabel.text = ""; 
             yield return new WaitForSeconds(0.2f);
         }
@@ -179,6 +173,7 @@ public class MainMenuController : MonoBehaviour
 
     private void OnExitClicked()
     {
+        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
         Application.Quit();
     }
 }

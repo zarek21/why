@@ -19,7 +19,7 @@
 *.dae filter=lfs diff=lfs merge=lfs -text
 *.max filter=lfs diff=lfs merge=lfs -text
 # Texturas e Imágenes (Marcadas como lockable para evitar conflictos entre artistas) 
-*.png filter=lfs diff=lfs merge=lfs -text lockable
+*.png filter=lfs diff=lfs merge=lfs -text
 *.jpg filter=lfs diff=lfs merge=lfs -text lockable
 *.jpeg filter=lfs diff=lfs merge=lfs -text lockable
 *.tga filter=lfs diff=lfs merge=lfs -text lockable
@@ -41,3 +41,4 @@
 LightingData.asset filter=lfs diff=lfs merge=lfs -text
 *TerrainData.asset filter=lfs diff=lfs merge=lfs -text
 NavMesh-*.asset filter=lfs diff=lfs merge=lfs -text
+. filter=lfs diff=lfs merge=lfs -text

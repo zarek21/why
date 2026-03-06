@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements; 
 using System.Collections.Generic;
-
+using MoreMountains.Feedbacks; // <-- NUEVO: Para usar los sonidos de tecleo de Feel
 public class TypingManager : MonoBehaviour
 {
     [Header("Referencias")]
@@ -9,7 +9,6 @@ public class TypingManager : MonoBehaviour
     [SerializeField] private LevelData currentLevelData; 
     [SerializeField] private GameUIManager uiManager; 
 
-    // --- NUEVAS VARIABLES PARA UI TOOLKIT ---
     private Label wordDisplay;
     private VisualElement timerFill;
 
@@ -18,18 +17,26 @@ public class TypingManager : MonoBehaviour
     [SerializeField] private Color typedColor  = new Color32(173, 186, 152,255);
     [SerializeField] private Color errorColor =new Color32(137, 76, 76,255);
 
+    [Header("Efectos de Sonido de Escritura (Feel)")]
+    [Tooltip("Feedback cuando el jugador presiona la tecla correcta")]
+    [SerializeField] private MMF_Player typeSuccessFeedback;
+    [Tooltip("Feedback cuando el jugador se equivoca de tecla")]
+    [SerializeField] private MMF_Player typeErrorFeedback;
+
     private string currentWord = "";
     private string typedWord = "";
     private int pisosConstruidos = 0; 
     private float maxTime;
     private float currentTime;
+    private string cachedTypedColorHex;
 
     private List<string> wordBag = new List<string>(); 
     private List<string> masterList = new List<string>();  
 
     private void Start()
     {
-        // 1. OBTENER REFERENCIAS DE UI TOOLKIT
+        cachedTypedColorHex = ColorUtility.ToHtmlStringRGB(typedColor);
+
         if (uiManager != null)
         {
             UIDocument uiDoc = uiManager.GetComponent<UIDocument>();
@@ -38,11 +45,9 @@ public class TypingManager : MonoBehaviour
             wordDisplay = root.Q<Label>("WordDisplay");
             timerFill = root.Q<VisualElement>("TimerFill");
             
-            // Asegurarnos de que el rich text esté activado por código
             if (wordDisplay != null) wordDisplay.enableRichText = true;
         }
 
-        // 2. CONFIGURAR NIVEL
         if (currentLevelData != null)
         {
             maxTime = currentLevelData.baseTimePerWord;
@@ -75,7 +80,6 @@ public class TypingManager : MonoBehaviour
     {
         currentTime -= Time.deltaTime;
 
-        // --- NUEVA LÓGICA DE BARRA DE TIEMPO CSS ---
         if (timerFill != null)
         {
             float percent = (currentTime / maxTime) * 100f;
@@ -116,6 +120,8 @@ public class TypingManager : MonoBehaviour
     {
         if (currentWord[typedWord.Length] == letter)
         {
+            if (typeSuccessFeedback != null) typeSuccessFeedback.PlayFeedbacks(); // <-- Sonido de tecla correcta
+            
             typedWord += letter;
 
             if (typedWord.Length == currentWord.Length)
@@ -131,6 +137,8 @@ public class TypingManager : MonoBehaviour
         }
         else
         {
+            if (typeErrorFeedback != null) typeErrorFeedback.PlayFeedbacks(); // <-- Sonido de error de tecla
+            
             HandleMistake();
             return true; 
         }
@@ -150,7 +158,6 @@ public class TypingManager : MonoBehaviour
             GameManager.Instance.LoseLife();
         }
 
-        // --- NUEVO FEEDBACK VISUAL UI TOOLKIT ---
         if (wordDisplay != null)
         {
             wordDisplay.style.color = new StyleColor(errorColor);
@@ -204,7 +211,8 @@ public class TypingManager : MonoBehaviour
 
     private void RefillBag()
     {
-        wordBag = new List<string>(masterList);
+        wordBag.Clear();
+        wordBag.AddRange(masterList);
         Shuffle(wordBag);
     }
 
@@ -223,7 +231,7 @@ public class TypingManager : MonoBehaviour
     {
         if (wordDisplay == null) return;
         
-        string typedPart = $"<color=#{ColorUtility.ToHtmlStringRGB(typedColor)}>{typedWord}</color>";
+        string typedPart = $"<color=#{cachedTypedColorHex}>{typedWord}</color>";
         string remainingPart = currentWord.Substring(typedWord.Length);
         wordDisplay.text = typedPart + remainingPart;
     }
