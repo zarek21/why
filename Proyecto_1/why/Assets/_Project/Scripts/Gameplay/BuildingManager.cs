@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening; 
-using MoreMountains.Feedbacks; // <-- NUEVO: Para usar Feel
+using MoreMountains.Feedbacks; 
 
 public class BuildingManager : MonoBehaviour
 {
@@ -20,8 +20,7 @@ public class BuildingManager : MonoBehaviour
     [SerializeField] private GameObject dustEffectPrefab; 
     [Tooltip("Feedback de Feel que se reproducirá al construir un piso")]
     [SerializeField] private MMF_Player floorBuiltFeedback; 
-    [Tooltip("Feedback de Feel que se reproducirá al destruirse un piso (error)")]
-    [SerializeField] private MMF_Player floorDestroyedFeedback; 
+    
 
     [Header("Configuración de Spawn")]
     [Tooltip("Altura desde donde cae el piso al instanciarse")]
@@ -60,7 +59,6 @@ public class BuildingManager : MonoBehaviour
             Instantiate(dustEffectPrefab, spawnPos, Quaternion.identity);
         }
 
-        // --- NUEVO: Reproducir Feedback de Feel ---
         if (floorBuiltFeedback != null)
         {
             floorBuiltFeedback.PlayFeedbacks();
@@ -91,12 +89,7 @@ public class BuildingManager : MonoBehaviour
             Instantiate(dustEffectPrefab, floorToRemove.transform.position, Quaternion.identity);
         }
 
-        // --- NUEVO: Reproducir Feedback de Destrucción (Feel) ---
-        if (floorDestroyedFeedback != null)
-        {
-            floorDestroyedFeedback.PlayFeedbacks();
-        }
-
+       
         activeFloors.RemoveAt(activeFloors.Count - 1);
 
 
