@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class SelfDestruct : MonoBehaviour
 {
-    [Tooltip("Tiempo en segundos antes de destruir este objeto")]
-    [SerializeField] private float lifetime = 2.0f;
+    [SerializeField] private float _lifetime = 2.0f;
 
     private void Start()
     {
-        Destroy(gameObject, lifetime);
+        Destroy(gameObject, _lifetime);
     }
 }

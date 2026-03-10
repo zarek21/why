@@ -1,66 +1,68 @@
 using UnityEngine;
 using UnityEngine.UIElements; 
 using System.Collections.Generic;
-using MoreMountains.Feedbacks; // <-- NUEVO: Para usar los sonidos de tecleo de Feel
+using MoreMountains.Feedbacks; 
+
+
 public class TypingManager : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private BuildingManager buildingManager;
-    [SerializeField] private LevelData currentLevelData; 
-    [SerializeField] private GameUIManager uiManager; 
+    [SerializeField] private BuildingManager _buildingManager;
+    [SerializeField] private LevelData _currentLevelData; 
+    [SerializeField] private GameUIManager _uiManager; 
 
-    private Label wordDisplay;
-    private VisualElement timerFill;
+    private Label _wordDisplay;
+    private VisualElement _timerFill;
 
     [Header("Feedback Visual")]
-    [SerializeField] private Color normalColor = Color.white;
-    [SerializeField] private Color typedColor  = new Color32(173, 186, 152,255);
-    [SerializeField] private Color errorColor =new Color32(137, 76, 76,255);
+    [SerializeField] private Color _normalColor = Color.white;
+    [SerializeField] private Color _typedColor  = new Color32(173, 186, 152,255);
+    [SerializeField] private Color _errorColor =new Color32(137, 76, 76,255);
 
     [Header("Efectos de Sonido de Escritura (Feel)")]
     [Tooltip("Feedback cuando el jugador presiona la tecla correcta")]
-    [SerializeField] private MMF_Player typeSuccessFeedback;
+    [SerializeField] private MMF_Player _typeSuccessFeedback;
     [Tooltip("Feedback cuando el jugador se equivoca de tecla")]
-    [SerializeField] private MMF_Player typeErrorFeedback;
+    [SerializeField] private MMF_Player _typeErrorFeedback;
 
-    private string currentWord = "";
-    private string typedWord = "";
-    private int pisosConstruidos = 0; 
-    private float maxTime;
-    private float currentTime;
-    private string cachedTypedColorHex;
+    private string _currentWord = "";
+    private string _typedWord = "";
+    private int _floorsBuilt = 0; 
+    private float _maxTime;
+    private float _currentTime;
+    private string _cachedTypedColorHex;
 
-    private List<string> wordBag = new List<string>(); 
-    private List<string> masterList = new List<string>();  
+    private List<string> _wordBag = new List<string>(); 
+    private List<string> _masterList = new List<string>();  
 
     private void Start()
     {
-        cachedTypedColorHex = ColorUtility.ToHtmlStringRGB(typedColor);
+        _cachedTypedColorHex = ColorUtility.ToHtmlStringRGB(_typedColor);
 
-        if (uiManager != null)
+        if (_uiManager != null)
         {
-            UIDocument uiDoc = uiManager.GetComponent<UIDocument>();
+            UIDocument uiDoc = _uiManager.GetComponent<UIDocument>();
             VisualElement root = uiDoc.rootVisualElement;
 
-            wordDisplay = root.Q<Label>("WordDisplay");
-            timerFill = root.Q<VisualElement>("TimerFill");
+            _wordDisplay = root.Q<Label>("WordDisplay");
+            _timerFill = root.Q<VisualElement>("TimerFill");
             
-            if (wordDisplay != null) wordDisplay.enableRichText = true;
+            if (_wordDisplay != null) _wordDisplay.enableRichText = true;
         }
 
-        if (currentLevelData != null)
+        if (_currentLevelData != null)
         {
-            maxTime = currentLevelData.baseTimePerWord;
-            masterList = new List<string>(currentLevelData.wordPool);
+            _maxTime = _currentLevelData.BaseTimePerWord;
+            _masterList = new List<string>(_currentLevelData.WordPool);
             
-            if (masterList.Count == 0) masterList.Add("ERROR");
+            if (_masterList.Count == 0) _masterList.Add("ERROR");
 
             RefillBag(); 
 
-            if (uiManager != null)
+            if (_uiManager != null)
             {
-                uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
-                uiManager.ActualizarVidas(currentLevelData.maxLives); 
+                _uiManager.ActualizarPisos(_floorsBuilt, _currentLevelData.TargetFloors);
+                _uiManager.ActualizarVidas(_currentLevelData.MaxLives); 
             }
         }
 
@@ -69,7 +71,7 @@ public class TypingManager : MonoBehaviour
 
     private void Update()
     {
-        if (GameManager.Instance != null && GameManager.Instance.isGameOver) return;
+        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
         if (Time.timeScale == 0f) return; 
 
         HandleTimer();
@@ -78,15 +80,15 @@ public class TypingManager : MonoBehaviour
 
     private void HandleTimer()
     {
-        currentTime -= Time.deltaTime;
+        _currentTime -= Time.deltaTime;
 
-        if (timerFill != null)
+        if (_timerFill != null)
         {
-            float percent = (currentTime / maxTime) * 100f;
-            timerFill.style.width = new Length(Mathf.Max(0, percent), LengthUnit.Percent);
+            float percent = (_currentTime / _maxTime) * 100f;
+            _timerFill.style.width = new Length(Mathf.Max(0, percent), LengthUnit.Percent);
         }
 
-        if (currentTime <= 0)
+        if (_currentTime <= 0)
         {
             HandleMistake(); 
         }
@@ -103,28 +105,28 @@ public class TypingManager : MonoBehaviour
             
             if (c == '\b') 
             {
-                if (typedWord.Length > 0)
+                if (_typedWord.Length > 0)
                 {
-                    typedWord = typedWord.Substring(0, typedWord.Length - 1);
+                    _typedWord = _typedWord.Substring(0, _typedWord.Length - 1);
                     UpdateDisplay();
                 }
                 continue;
             }
 
-            bool stopProcessing = CheckLetter(charUpper);
-            if (stopProcessing) return; 
+            bool shouldStopProcessing = CheckLetter(charUpper);
+            if (shouldStopProcessing) return; 
         }
     }
 
     private bool CheckLetter(char letter)
     {
-        if (currentWord[typedWord.Length] == letter)
+        if (_currentWord[_typedWord.Length] == letter)
         {
-            if (typeSuccessFeedback != null) typeSuccessFeedback.PlayFeedbacks(); // <-- Sonido de tecla correcta
+            if (_typeSuccessFeedback != null) _typeSuccessFeedback.PlayFeedbacks();
             
-            typedWord += letter;
+            _typedWord += letter;
 
-            if (typedWord.Length == currentWord.Length)
+            if (_typedWord.Length == _currentWord.Length)
             {
                 WordCompleted();
                 return true; 
@@ -137,7 +139,7 @@ public class TypingManager : MonoBehaviour
         }
         else
         {
-            if (typeErrorFeedback != null) typeErrorFeedback.PlayFeedbacks(); // <-- Sonido de error de tecla
+            if (_typeErrorFeedback != null) _typeErrorFeedback.PlayFeedbacks();
             
             HandleMistake();
             return true; 
@@ -146,11 +148,11 @@ public class TypingManager : MonoBehaviour
     
     private void HandleMistake()
     {
-        if (buildingManager != null) 
+        if (_buildingManager != null) 
         {
-            buildingManager.RemoveTopFloor();
-            if (pisosConstruidos > 0) pisosConstruidos--;
-            if (uiManager != null) uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
+            _buildingManager.RemoveTopFloor();
+            if (_floorsBuilt > 0) _floorsBuilt--;
+            if (_uiManager != null) _uiManager.ActualizarPisos(_floorsBuilt, _currentLevelData.TargetFloors);
         }
         
         if (GameManager.Instance != null) 
@@ -158,9 +160,9 @@ public class TypingManager : MonoBehaviour
             GameManager.Instance.LoseLife();
         }
 
-        if (wordDisplay != null)
+        if (_wordDisplay != null)
         {
-            wordDisplay.style.color = new StyleColor(errorColor);
+            _wordDisplay.style.color = new StyleColor(_errorColor);
             Invoke("ResetColor", 0.3f);
         }
         
@@ -171,39 +173,39 @@ public class TypingManager : MonoBehaviour
     {
         if (GameManager.Instance != null) GameManager.Instance.AddCombo();
 
-        int pisosAConstruir = 1; 
+        int floorsToAdd = 1; 
         if (GameManager.Instance != null)
         {
-            int combo = GameManager.Instance.currentCombo;
-            if (combo >= 15) pisosAConstruir = 3; 
-            else if (combo >= 10) pisosAConstruir = 2; 
+            int combo = GameManager.Instance.CurrentCombo;
+            if (combo >= 15) floorsToAdd = 3; 
+            else if (combo >= 10) floorsToAdd = 2; 
         }
 
-        for (int i = 0; i < pisosAConstruir; i++)
+        for (int i = 0; i < floorsToAdd; i++)
         {
-            if (buildingManager != null) buildingManager.AddFloor();
-            pisosConstruidos++;
+            if (_buildingManager != null) _buildingManager.AddFloor();
+            _floorsBuilt++;
         }
         
-        if (uiManager != null) uiManager.ActualizarPisos(pisosConstruidos, currentLevelData.targetFloors);
+        if (_uiManager != null) _uiManager.ActualizarPisos(_floorsBuilt, _currentLevelData.TargetFloors);
         
         SetNewWord();
     }
 
     private void SetNewWord()
     {
-        typedWord = "";
+        _typedWord = "";
         
-        if (wordBag.Count == 0) RefillBag();
+        if (_wordBag.Count == 0) RefillBag();
 
-        if (wordBag.Count > 0)
+        if (_wordBag.Count > 0)
         {
-            int lastIndex = wordBag.Count - 1;
-            currentWord = wordBag[lastIndex].ToUpper();
-            wordBag.RemoveAt(lastIndex);
+            int lastIndex = _wordBag.Count - 1;
+            _currentWord = _wordBag[lastIndex].ToUpper();
+            _wordBag.RemoveAt(lastIndex);
         }
         
-        currentTime = maxTime; 
+        _currentTime = _maxTime; 
         
         UpdateDisplay();
         ResetColor(); 
@@ -211,9 +213,9 @@ public class TypingManager : MonoBehaviour
 
     private void RefillBag()
     {
-        wordBag.Clear();
-        wordBag.AddRange(masterList);
-        Shuffle(wordBag);
+        _wordBag.Clear();
+        _wordBag.AddRange(_masterList);
+        Shuffle(_wordBag);
     }
 
     private void Shuffle(List<string> list)
@@ -229,15 +231,15 @@ public class TypingManager : MonoBehaviour
 
     private void UpdateDisplay()
     {
-        if (wordDisplay == null) return;
+        if (_wordDisplay == null) return;
         
-        string typedPart = $"<color=#{cachedTypedColorHex}>{typedWord}</color>";
-        string remainingPart = currentWord.Substring(typedWord.Length);
-        wordDisplay.text = typedPart + remainingPart;
+        string typedPart = $"<color=#{_cachedTypedColorHex}>{_typedWord}</color>";
+        string remainingPart = _currentWord.Substring(_typedWord.Length);
+        _wordDisplay.text = typedPart + remainingPart;
     }
 
     private void ResetColor()
     {
-        if (wordDisplay != null) wordDisplay.style.color = new StyleColor(normalColor);
+        if (_wordDisplay != null) _wordDisplay.style.color = new StyleColor(_normalColor);
     }
 }

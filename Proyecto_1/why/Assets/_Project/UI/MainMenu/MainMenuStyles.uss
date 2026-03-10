@@ -1,11 +1,10 @@
 .apple-button {
     background-image: none;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
-    font-size: 55px;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    font-size: 70px;
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
-    background-color: rgb(59, 61, 63);
+    background-color: rgb(162, 17, 83);
     border-color: transparent;
     border-radius: 60px;
     padding-top: 15px;
@@ -22,10 +21,11 @@
 }
 
 .apple-button:hover {
-    background-color: rgb(137, 137, 137);
+    background-color:rgb(69, 7, 36);
+    scale: 1.05;
 }
 
 .apple-button:active {
-    scale: 1;
+    scale: 1.05;
     background-color: rgb(137, 137, 137);
 }

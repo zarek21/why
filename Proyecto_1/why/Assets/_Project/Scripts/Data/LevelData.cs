@@ -5,39 +5,41 @@ using System.Collections.Generic;
 public class LevelData : ScriptableObject
 {
     [Header("Supervivencia")]
-    public int maxLives = 3;
+    public int MaxLives = 3;
     
     [Header("Configuración del Nivel")]
-    public int levelIndex;          
-    public string levelName;        
+    public int LevelIndex;
+
+    public string LevelName;        
 
     [Header("Dificultad")]
-    public int targetFloors;       
-    public float baseTimePerWord;   
+    public int TargetFloors;
+
+    public float BaseTimePerWord;   
     
 
     
     [Header("Economía")]
-    public int scoreBonus;          
+    public int ScoreBonus;          
 
     [Header("Diccionario")]
     [TextArea(3, 10)]
-    public List<string> wordPool = new List<string>();
+    public List<string> WordPool = new List<string>();
 
     [ContextMenu("Generar Palabras")]
     public void GenerateWords()
     {
-        wordPool.Clear();
-        switch (levelIndex)
+        WordPool.Clear();
+        switch (LevelIndex)
         {
             case 1:
-                wordPool.AddRange(GetWordsLevel1());
+                WordPool.AddRange(GetWordsLevel1());
                 break;
             case 2:
-                wordPool.AddRange(GetWordsLevel2());
+                WordPool.AddRange(GetWordsLevel2());
                 break;
             case 3:
-                wordPool.AddRange(GetWordsLevel3());
+                WordPool.AddRange(GetWordsLevel3());
                 break;
         }
     }

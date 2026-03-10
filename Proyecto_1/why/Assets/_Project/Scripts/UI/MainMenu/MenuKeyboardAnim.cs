@@ -4,41 +4,41 @@ using DG.Tweening;
 public class MenuKeyboardAnim : MonoBehaviour
 {
     [Header("Configuración de Flotación")]
-    [SerializeField] private float floatHeight = 0.5f;
-    [SerializeField] private float floatDuration = 2f;
+    [SerializeField] private float _floatHeight = 0.5f;
+    [SerializeField] private float _floatDuration = 2f;
 
     [Header("Rotación Automática (Idle)")]
-    [SerializeField] private Vector3 rotationAmount = new Vector3(5f, 10f, 5f);
-    [SerializeField] private float rotationDuration = 4f;
+    [SerializeField] private Vector3 _rotationAmount = new Vector3(5f, 0f, 0f);
+    [SerializeField] private float _rotationDuration = 4f;
 
     [Header("Estado Final")]
-    [SerializeField] private Vector3 finalPosition = new Vector3(-0.03f, 0.42f, 3.07f); 
-    [SerializeField] private Vector3 finalRotation = new Vector3(186.304f, -360.361f, 180.241f);
-    [SerializeField] private Vector3 finalScale = new Vector3(400f, 400f, 400f);
-    [SerializeField] private float transitionDuration = 1.0f;
+    [SerializeField] private Vector3 _finalPosition = new Vector3(-0.03f, 0.42f, 3.07f); 
+    [SerializeField] private Vector3 _finalRotation = new Vector3(186.304f, -360.361f, 180.241f);
+    [SerializeField] private Vector3 _finalScale = new Vector3(400f, 400f, 400f);
+    [SerializeField] private float _transitionDuration = 1.0f;
 
     [Header("Rotación con el Mouse (Hover)")]
-    [SerializeField] private float maxRotX = 20f; 
-    [SerializeField] private float maxRotY = 25f; 
-    [SerializeField] private float hoverSmoothness = 5f;
+    [SerializeField] private float _maxRotX = 20f; 
+    [SerializeField] private float _maxRotY = 25f; 
+    [SerializeField] private float _hoverSmoothness = 5f;
 
-    private Quaternion baseRotation;
-    private Quaternion targetHoverRotation;
-    private bool isHovering = false;
+    private Quaternion _baseRotation;
+    private Quaternion _targetHoverRotation;
+    private bool _isHovering = false;
     
-    private bool isLocked = false; 
-    private bool isInFinalMenu = false; 
+    private bool _isLocked = false; 
+    private bool _isInFinalMenu = false; 
 
-    private Tween floatTween; 
-    private Tween idleRotationTween;
-    private Tween returnRotationTween;
+    private Tween _floatTween; 
+    private Tween _idleRotationTween;
+    private Tween _returnRotationTween;
 
     private void Start()
     {
-        baseRotation = transform.rotation;
-        targetHoverRotation = baseRotation;
+        _baseRotation = transform.rotation;
+        _targetHoverRotation = _baseRotation;
 
-        floatTween = transform.DOMoveY(transform.position.y + floatHeight, floatDuration)
+        _floatTween = transform.DOMoveY(transform.position.y + _floatHeight, _floatDuration)
             .SetEase(Ease.InOutSine)
             .SetLoops(-1, LoopType.Yoyo);
 
@@ -47,76 +47,76 @@ public class MenuKeyboardAnim : MonoBehaviour
 
     private void Update()
     {
-        if (isLocked) return;
+        if (_isLocked) return;
 
-        if (isHovering || isInFinalMenu) 
+        if (_isHovering || _isInFinalMenu) 
         {
             Vector3 mousePos = Input.mousePosition;
             
             float normalizedX = (mousePos.x / Screen.width) * 2f - 1f;
             float normalizedY = (mousePos.y / Screen.height) * 2f - 1f;
 
-            float targetX = -normalizedY * maxRotX;
-            float targetY = normalizedX * maxRotY;
+            float targetX = -normalizedY * _maxRotX;
+            float targetY = normalizedX * _maxRotY;
 
-            targetHoverRotation = baseRotation * Quaternion.Euler(targetX, targetY, 0);
+            _targetHoverRotation = _baseRotation * Quaternion.Euler(targetX, targetY, 0);
             
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetHoverRotation, Time.deltaTime * hoverSmoothness);
+            transform.rotation = Quaternion.Slerp(transform.rotation, _targetHoverRotation, Time.deltaTime * _hoverSmoothness);
         }
     }
 
     private void StartIdleRotation()
     {
-        idleRotationTween = transform.DORotate(rotationAmount, rotationDuration, RotateMode.LocalAxisAdd)
+        _idleRotationTween = transform.DORotate(_rotationAmount, _rotationDuration, RotateMode.LocalAxisAdd)
             .SetEase(Ease.InOutSine)
             .SetLoops(-1, LoopType.Yoyo);
     }
 
     private void OnMouseEnter()
     {
-        if (isLocked) return; 
+        if (_isLocked) return; 
 
-        isHovering = true;
-        idleRotationTween?.Kill();
-        returnRotationTween?.Kill();
+        _isHovering = true;
+        _idleRotationTween?.Kill();
+        _returnRotationTween?.Kill();
     }
 
     private void OnMouseExit()
     {
-        if (isLocked) return; 
+        if (_isLocked) return; 
 
-        if (isInFinalMenu) return;
+        if (_isInFinalMenu) return;
 
-        isHovering = false;
+        _isHovering = false;
         
-        returnRotationTween = transform.DORotateQuaternion(baseRotation, 0.5f).OnComplete(() => {
+        _returnRotationTween = transform.DORotateQuaternion(_baseRotation, 0.5f).OnComplete(() => {
             StartIdleRotation();
         });
     }
 
     public Tween AnimateToFinalState()
     {
-        isLocked = true;
-        isHovering = false;
-        isInFinalMenu = true;
+        _isLocked = true;
+        _isHovering = false;
+        _isInFinalMenu = true;
 
-        floatTween?.Kill(); 
-        idleRotationTween?.Kill();
-        returnRotationTween?.Kill();
+        _floatTween?.Kill(); 
+        _idleRotationTween?.Kill();
+        _returnRotationTween?.Kill();
 
         Sequence finalSequence = DOTween.Sequence();
         
-        finalSequence.Append(transform.DOMove(finalPosition, transitionDuration).SetEase(Ease.InOutSine));
+        finalSequence.Append(transform.DOMove(_finalPosition, _transitionDuration).SetEase(Ease.InOutSine));
         
-        Quaternion targetFinalRotation = Quaternion.Euler(finalRotation);
-        finalSequence.Join(transform.DORotateQuaternion(targetFinalRotation, transitionDuration).SetEase(Ease.InOutSine));
+        Quaternion targetFinalRotation = Quaternion.Euler(_finalRotation);
+        finalSequence.Join(transform.DORotateQuaternion(targetFinalRotation, _transitionDuration).SetEase(Ease.InOutSine));
 
-        finalSequence.Join(transform.DOScale(finalScale, transitionDuration).SetEase(Ease.InOutSine));
+        finalSequence.Join(transform.DOScale(_finalScale, _transitionDuration).SetEase(Ease.InOutSine));
 
         finalSequence.AppendCallback(() => {
-            baseRotation = targetFinalRotation;
-            targetHoverRotation = baseRotation;
-            isLocked = false;
+            _baseRotation = targetFinalRotation;
+            _targetHoverRotation = _baseRotation;
+            _isLocked = false;
         });
 
         return finalSequence;

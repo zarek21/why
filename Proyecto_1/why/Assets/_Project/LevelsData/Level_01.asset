@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4e5a7f8472e8d4da12db58812bcf52, type: 3}
   m_Name: Level_01
   m_EditorClassIdentifier: 
-  maxLives: 3
-  levelIndex: 1
-  levelName: "Alba\xF1il Novato"
-  targetFloors: 20
-  baseTimePerWord: 5
-  scoreBonus: 100
-  wordPool:
+  MaxLives: 3
+  LevelIndex: 1
+  LevelName: Level_1
+  TargetFloors: 50
+  BaseTimePerWord: 3
+  ScoreBonus: 0
+  WordPool:
   - SKIBIDI
   - COQUETTE
   - POTAXIO

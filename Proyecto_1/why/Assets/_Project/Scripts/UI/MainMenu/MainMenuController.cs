@@ -3,90 +3,90 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement; 
 using DG.Tweening;
-using MoreMountains.Feedbacks; // <-- NUEVO: Para sonidos Feel en la UI
+using MoreMountains.Feedbacks;
 
 public class MainMenuController : MonoBehaviour
 {
     [Header("Referencias")]
-    [SerializeField] private MenuKeyboardAnim keyboardAnim;
+    [SerializeField] private MenuKeyboardAnim _keyboardAnim;
 
     [Header("Transición")]
-    [SerializeField] private float finalTextFadeDuration = 0.5f;
+    [SerializeField] private float _finalTextFadeDuration = 0.5f;
 
     [Header("Efectos UI (Feel)")]
     [Tooltip("Feedback que sonará al dar clic en los botones del menú")]
-    [SerializeField] private MMF_Player buttonClickFeedback; 
+    [SerializeField] private MMF_Player _buttonClickFeedback; 
 
     [Header("Navegación y Carga")]
-    [SerializeField] private string gameSceneName = "GameScene";
-    [SerializeField] private float fadeToBlackDuration = 1.0f;
+    [SerializeField] private string _gameSceneName = "GameScene";
+    [SerializeField] private float _fadeToBlackDuration = 1.0f;
     [Tooltip("Tiempo de espera artificial (en segundos) para ver la pantalla de carga")]
-    [SerializeField] private float artificialLoadTime = 6f;
+    [SerializeField] private float _artificialLoadTime = 6f;
     [Tooltip("Velocidad de escritura del texto 'CARGANDO...'")]
-    [SerializeField] private float loadingTypeSpeed = 0.1f;
+    [SerializeField] private float _loadingTypeSpeed = 0.1f;
 
-    private UIDocument uiDocument;
-    private Label subtitleLabel; 
-    private VisualElement finalTextContainer;
+    private UIDocument _uiDocument;
+    private Label _subtitleLabel; 
+    private VisualElement _finalTextContainer;
     
-    private VisualElement loadingScreen; 
-    private Label loadingTextLabel;
-    private Button playButton;
-    private Button exitButton;
+    private VisualElement _loadingScreen; 
+    private Label _loadingTextLabel;
+    private Button _playButton;
+    private Button _exitButton;
 
-    private bool isTransitioning = false;
-    private string fullLoadingText = "LOADING..."; 
+    private bool _isTransitioning = false;
+    private string _fullLoadingText = "LOADING..."; 
 
-    void OnEnable()
+    private void OnEnable()
     {
-        uiDocument = GetComponent<UIDocument>();
-        VisualElement root = uiDocument.rootVisualElement;
+        _uiDocument = GetComponent<UIDocument>();
+        VisualElement root = _uiDocument.rootVisualElement;
 
-        subtitleLabel = root.Q<Label>("SubtitleLabel");
-        finalTextContainer = root.Q<VisualElement>("finalTextContainer");
+        _subtitleLabel = root.Q<Label>("SubtitleLabel");
+        _finalTextContainer = root.Q<VisualElement>("finalTextContainer");
         
-        playButton = root.Q<Button>("PlayButton");
-        exitButton = root.Q<Button>("ExitButton"); 
+        _playButton = root.Q<Button>("PlayButton");
+        _exitButton = root.Q<Button>("ExitButton"); 
         
-        loadingScreen = root.Q<VisualElement>("LoadingScreen");
-        loadingTextLabel = root.Q<Label>("LoadingTextLabel"); 
+        _loadingScreen = root.Q<VisualElement>("LoadingScreen");
+        _loadingTextLabel = root.Q<Label>("LoadingTextLabel"); 
 
-        if (playButton != null) playButton.clicked += OnPlayClicked;
-        if (exitButton != null) exitButton.clicked += OnExitClicked;
+        if (_playButton != null) _playButton.clicked += OnPlayClicked;
+        if (_exitButton != null) _exitButton.clicked += OnExitClicked;
 
-        if (finalTextContainer != null)
+        if (_finalTextContainer != null)
         {
-            finalTextContainer.style.opacity = 0f;
-            finalTextContainer.style.display = DisplayStyle.None;
+            _finalTextContainer.style.opacity = 0f;
+            _finalTextContainer.style.display = DisplayStyle.None;
         }
 
-        if (loadingScreen != null)
+        if (_loadingScreen != null)
         {
-            loadingScreen.style.opacity = 0f;
-            loadingScreen.style.display = DisplayStyle.None;
+            _loadingScreen.style.opacity = 0f;
+            _loadingScreen.style.display = DisplayStyle.None;
         }
         
-        if (loadingTextLabel != null) loadingTextLabel.text = "";
+        if (_loadingTextLabel != null) _loadingTextLabel.text = "";
     }
 
-    void OnDisable() 
+    private void OnDisable() 
     {
-        if (playButton != null) playButton.clicked -= OnPlayClicked;
-        if (exitButton != null) exitButton.clicked -= OnExitClicked;
+        if (_playButton != null) _playButton.clicked -= OnPlayClicked;
+        if (_exitButton != null) _exitButton.clicked -= OnExitClicked;
     }
 
-    void Update()
+    private void Update()
     {
-        if (!isTransitioning && Input.anyKeyDown)
+        if (!_isTransitioning && Input.anyKeyDown)
         {
-            isTransitioning = true;
+            _isTransitioning = true;
             
-            Tween keyboardTween = keyboardAnim?.AnimateToFinalState();
+            Tween keyboardTween = _keyboardAnim?.AnimateToFinalState();
 
-            if (subtitleLabel != null)
+            if (_subtitleLabel != null)
             {
-                DOTween.To(() => subtitleLabel.resolvedStyle.opacity, x => subtitleLabel.style.opacity = x, 0f, 0.5f)
-                       .OnComplete(() => subtitleLabel.style.display = DisplayStyle.None);
+                DOTween.To(() => _subtitleLabel.resolvedStyle.opacity, x => _subtitleLabel.style.opacity = x, 0f, 0.5f)
+                       .OnComplete(() => _subtitleLabel.style.display = DisplayStyle.None);
             }
 
             if (keyboardTween != null)
@@ -102,49 +102,49 @@ public class MainMenuController : MonoBehaviour
 
     private void ShowFinalMenu()
     {
-        if (finalTextContainer != null)
+        if (_finalTextContainer != null)
         {
-            finalTextContainer.style.display = DisplayStyle.Flex;
-            DOTween.To(() => finalTextContainer.resolvedStyle.opacity, x => finalTextContainer.style.opacity = x, 1f, finalTextFadeDuration);
+            _finalTextContainer.style.display = DisplayStyle.Flex;
+            DOTween.To(() => _finalTextContainer.resolvedStyle.opacity, x => _finalTextContainer.style.opacity = x, 1f, _finalTextFadeDuration);
         }
     }
 
 
     private void OnPlayClicked()
     {
-        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
 
-        if (string.IsNullOrEmpty(gameSceneName)) return;
+        if (string.IsNullOrEmpty(_gameSceneName)) return;
 
-        playButton.SetEnabled(false);
-        exitButton.SetEnabled(false);
+        _playButton.SetEnabled(false);
+        _exitButton.SetEnabled(false);
 
-        if (loadingScreen != null)
+        if (_loadingScreen != null)
         {
-            loadingScreen.style.display = DisplayStyle.Flex;
+            _loadingScreen.style.display = DisplayStyle.Flex;
             
-            DOTween.To(() => loadingScreen.resolvedStyle.opacity, x => loadingScreen.style.opacity = x, 1f, fadeToBlackDuration)
+            DOTween.To(() => _loadingScreen.resolvedStyle.opacity, x => _loadingScreen.style.opacity = x, 1f, _fadeToBlackDuration)
                    .OnComplete(() => {
                        StartCoroutine(LoadSceneAsync());
                    });
         }
         else
         {
-            SceneManager.LoadScene(gameSceneName);
+            SceneManager.LoadScene(_gameSceneName);
         }
     }
 
     private IEnumerator LoadSceneAsync()
     {
         Coroutine typingCoroutine = null;
-        if (loadingTextLabel != null)
+        if (_loadingTextLabel != null)
         {
             typingCoroutine = StartCoroutine(LoadingTextTypingEffect());
         }
 
-        yield return new WaitForSeconds(artificialLoadTime);
+        yield return new WaitForSeconds(_artificialLoadTime);
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(gameSceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_gameSceneName);
 
         while (!asyncLoad.isDone)
         {
@@ -158,22 +158,22 @@ public class MainMenuController : MonoBehaviour
     {
         while (true)
         {
-            for (int i = 0; i <= fullLoadingText.Length; i++)
+            for (int i = 0; i <= _fullLoadingText.Length; i++)
             {
-                loadingTextLabel.text = fullLoadingText.Substring(0, i);
-                yield return new WaitForSeconds(loadingTypeSpeed);
+                _loadingTextLabel.text = _fullLoadingText.Substring(0, i);
+                yield return new WaitForSeconds(_loadingTypeSpeed);
             }
             
             yield return new WaitForSeconds(0.6f);
             
-            loadingTextLabel.text = ""; 
+            _loadingTextLabel.text = ""; 
             yield return new WaitForSeconds(0.2f);
         }
     }
 
     private void OnExitClicked()
     {
-        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
         Application.Quit();
     }
 }

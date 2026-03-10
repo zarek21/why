@@ -3,16 +3,16 @@
     <Style src="project://database/Assets/_Project/UI/GameUIStyles.uss?fileID=7433441132597879392&amp;guid=479b323fa6289a04fa660ee700dd08ab&amp;type=3#GameUIStyles" />
     <ui:VisualElement name="HUDContainer" style="flex-grow: 1; display: flex;">
         <ui:Label text="PISOS: 0 / 10" name="ScoreLabel" class="hud-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        <ui:Label text="X" name="ComboLabel" style="display: flex; margin-top: 100px; position: relative; top: initial; left: auto; margin-left: 0; margin-right: 130px; margin-bottom: 0; align-items: center; justify-content: flex-end; align-self: center; -unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:Label text="VIDAS: 3&#10;" name="LivesLabel" class="hud-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
     </ui:VisualElement>
-    <ui:Label text="X5!" name="ComboLabel" style="align-items: flex-start; justify-content: flex-end; align-self: center; align-content: center; -unity-text-align: upper-center; display: flex; -unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); position: absolute; top: 0%;" />
-    <ui:VisualElement name="GameplayContainer" style="flex-grow: 1;">
+    <ui:VisualElement name="GameplayContainer" style="flex-grow: 1; display: flex;">
         <ui:Label text="Label" name="WordDisplay" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:VisualElement name="TimerBackground" style="flex-grow: 1;">
             <ui:VisualElement name="TimerFill" style="flex-grow: 1;" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="TutorialOverlay" enabled="true" style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0; display: flex; position: absolute;">
+    <ui:VisualElement name="TutorialOverlay" enabled="true" style="flex-grow: 1; top: 0; bottom: 0; right: 0; left: 0; display: none; position: absolute;">
         <ui:VisualElement name="ModalContainer" style="flex-grow: 1;">
             <ui:Label text="How to play?" name="TutorialTitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); margin-top: 25px; color: rgb(59, 61, 63); align-self: flex-end; justify-content: center; align-items: center; align-content: center;" />
             <ui:ScrollView name="RulesScrollView">
@@ -45,5 +45,10 @@
             <ui:Label text="¡CONSTRUCTED!" name="ResultTitleLabel" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); font-size: 150px; background-color: rgba(0, 0, 0, 0); color: rgb(255, 255, 255); justify-content: center; align-self: center; align-content: center;" />
             <ui:Button text="RETRY" name="RestartButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="PauseOverlay" style="flex-grow: 1; top: -2px; bottom: 3px; right: 0; left: 0; display: none;">
+        <ui:Label text="PAUSE" name="PauseTitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        <ui:Button text="KEEP TYPING" name="ResumeButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        <ui:Button text="QUIT GAME" name="QuitButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
     </ui:VisualElement>
 </ui:UXML>

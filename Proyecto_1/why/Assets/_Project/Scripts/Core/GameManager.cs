@@ -6,15 +6,17 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
 
     [Header("Configuración")]
-    public LevelData levelData; 
+    public LevelData LevelData; 
 
     [Header("UI Toolkit (Frontend)")]
-    [SerializeField] private GameUIManager uiManager;
+    [SerializeField] private GameUIManager _uiManager;
 
-    private int currentLives;
-    private int currentFloors = 0;
-    public int currentCombo = 0;
-    public bool isGameOver = false; 
+    private int _currentLives;
+    private int _currentFloors = 0;
+
+    public int CurrentCombo = 0;
+
+    public bool IsGameOver = false; 
 
     private void Awake()
     {
@@ -31,24 +33,24 @@ public class GameManager : MonoBehaviour
     
     private void Start()
     {
-        if (levelData != null)
+        if (LevelData != null)
         {
-            currentLives = levelData.maxLives;
+            _currentLives = LevelData.MaxLives;
         }
         
         UpdateLivesUI();
         UpdateProgressUI(); 
-        if (uiManager != null) uiManager.MostrarCombo(currentCombo);
+        if (_uiManager != null) _uiManager.MostrarCombo(CurrentCombo);
     }
 
     public void AddFloorScore()
     {
-        if (isGameOver) return; 
+        if (IsGameOver) return; 
         
-        currentFloors++;
+        _currentFloors++;
         UpdateProgressUI(); 
         
-        if (levelData != null && currentFloors >= levelData.targetFloors)
+        if (LevelData != null && _currentFloors >= LevelData.TargetFloors)
         {
             ShowGameOver(true);
         }
@@ -56,12 +58,12 @@ public class GameManager : MonoBehaviour
 
     public void RemoveFloorScore()
     {
-        if (isGameOver) return;
+        if (IsGameOver) return;
 
-        currentFloors--;
+        _currentFloors--;
         UpdateProgressUI();
         
-        if (currentFloors < 0)
+        if (_currentFloors < 0)
         {
             ShowGameOver(false);
         }
@@ -69,19 +71,19 @@ public class GameManager : MonoBehaviour
 
     private void UpdateProgressUI()
     {
-        if (uiManager != null && levelData != null)
+        if (_uiManager != null && LevelData != null)
         {
-            int displayFloors = Mathf.Max(0, currentFloors);
-            uiManager.ActualizarPisos(displayFloors, levelData.targetFloors);
+            int displayFloors = Mathf.Max(0, _currentFloors);
+            _uiManager.ActualizarPisos(displayFloors, LevelData.TargetFloors);
         }
     }
     
     public void AddCombo()
     {
-        currentCombo++;
-        if (uiManager != null) uiManager.MostrarCombo(currentCombo);
+        CurrentCombo++;
+        if (_uiManager != null) _uiManager.MostrarCombo(CurrentCombo);
 
-        if (currentCombo > 0 && currentCombo % 5 == 0)
+        if (CurrentCombo > 0 && CurrentCombo % 5 == 0)
         {
             RecoverLife();
         }
@@ -89,35 +91,35 @@ public class GameManager : MonoBehaviour
 
     public void ResetCombo()
     {
-        currentCombo = 0;
-        if (uiManager != null) uiManager.MostrarCombo(currentCombo);
+        CurrentCombo = 0;
+        if (_uiManager != null) _uiManager.MostrarCombo(CurrentCombo);
     }
 
     public void LoseLife()
     {
-        if (isGameOver) return;
+        if (IsGameOver) return;
         
         ResetCombo(); 
-        currentLives--;
+        _currentLives--;
         UpdateLivesUI();
 
-        if (currentLives <= 0) ShowGameOver(false);
+        if (_currentLives <= 0) ShowGameOver(false);
     }
 
     private void RecoverLife()
     {
-        currentLives++;
+        _currentLives++;
         UpdateLivesUI();
     }
 
     private void UpdateLivesUI()
     {
-        if (uiManager != null) uiManager.ActualizarVidas(currentLives);
+        if (_uiManager != null) _uiManager.ActualizarVidas(_currentLives);
     }
 
-    private void ShowGameOver(bool victory)
+    private void ShowGameOver(bool isVictory)
     {
-        isGameOver = true;
-        if (uiManager != null) uiManager.MostrarGameOver(victory);
+        IsGameOver = true;
+        if (_uiManager != null) _uiManager.MostrarGameOver(isVictory);
     }
 }

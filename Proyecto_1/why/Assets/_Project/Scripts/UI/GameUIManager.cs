@@ -1,165 +1,215 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement; 
-using MoreMountains.Feedbacks; // <-- NUEVO: Para usar Feel en la UI
+using MoreMountains.Feedbacks;
 
 public class GameUIManager : MonoBehaviour
 {
-    private UIDocument uiDocument;
+    private UIDocument _uiDocument;
     
-    private VisualElement tutorialOverlay;
-    private Button startLevelButton;
-    private VisualElement hudContainer;
-    private Label scoreLabel;
-    private Label livesLabel;
+    private VisualElement _tutorialOverlay;
+    private Button _startLevelButton;
+    private VisualElement _hudContainer;
+    private Label _scoreLabel;
+    private Label _livesLabel;
 
-    private Label comboLabel;
-    private VisualElement resultsOverlay;
-    private Label resultTitleLabel;
-    private Button restartButton;
-    private static bool hasSeenTutorial = false; 
+    private Label _comboLabel;
+    private VisualElement _resultsOverlay;
+    private Label _resultTitleLabel;
+    private Button _restartButton;
+    private static bool _hasSeenTutorial = false; 
 
-    private int oldPisos = -1;
-    private int oldVidas = -1;
-    private int oldCombo = -1;
+    [Header("Pausa")]
+    private VisualElement _pauseOverlay;
+    private Button _resumeButton;
+    private Button _quitButton;
+    private bool _isPaused = false;
+
+    private int _oldFloors = -1;
+    private int _oldLives = -1;
+    private int _oldCombo = -1;
 
     [Header("Efectos de Sonido UI (Feel)")]
     [Tooltip("Sonido general al hacer clic en botones principales")]
-    [SerializeField] private MMF_Player buttonClickFeedback; 
+    [SerializeField] private MMF_Player _buttonClickFeedback; 
 
-    void OnEnable()
+    private void OnEnable()
     {
-        uiDocument = GetComponent<UIDocument>();
-        VisualElement root = uiDocument.rootVisualElement;
+        _uiDocument = GetComponent<UIDocument>();
+        VisualElement root = _uiDocument.rootVisualElement;
 
-        tutorialOverlay = root.Q<VisualElement>("TutorialOverlay");
-        startLevelButton = root.Q<Button>("StartLevelButton");
-        hudContainer = root.Q<VisualElement>("HUDContainer");
-        scoreLabel = root.Q<Label>("ScoreLabel");
-        livesLabel = root.Q<Label>("LivesLabel");
+        _tutorialOverlay = root.Q<VisualElement>("TutorialOverlay");
+        _startLevelButton = root.Q<Button>("StartLevelButton");
+        _hudContainer = root.Q<VisualElement>("HUDContainer");
+        _scoreLabel = root.Q<Label>("ScoreLabel");
+        _livesLabel = root.Q<Label>("LivesLabel");
 
-        comboLabel = root.Q<Label>("ComboLabel");
-        resultsOverlay = root.Q<VisualElement>("ResultsOverlay");
-        resultTitleLabel = root.Q<Label>("ResultTitleLabel");
-        restartButton = root.Q<Button>("RestartButton");
+        _comboLabel = root.Q<Label>("ComboLabel");
+        _resultsOverlay = root.Q<VisualElement>("ResultsOverlay");
+        _resultTitleLabel = root.Q<Label>("ResultTitleLabel");
+        _restartButton = root.Q<Button>("RestartButton");
 
-        if (startLevelButton != null) startLevelButton.clicked += OnStartPlayingClicked;
-        if (restartButton != null) restartButton.clicked += OnRestartClicked;
+        _pauseOverlay = root.Q<VisualElement>("PauseOverlay");
+        _resumeButton = root.Q<Button>("ResumeButton");
+        _quitButton = root.Q<Button>("QuitButton");
 
-        if (resultsOverlay != null) resultsOverlay.style.display = DisplayStyle.None;
-        if (comboLabel != null) comboLabel.style.display = DisplayStyle.None;
+        if (_startLevelButton != null) _startLevelButton.clicked += OnStartPlayingClicked;
+        if (_restartButton != null) _restartButton.clicked += OnRestartClicked;
+        if (_resumeButton != null) _resumeButton.clicked += ResumeGame;
+        if (_quitButton != null) _quitButton.clicked += QuitToMenu;
 
-        if (!hasSeenTutorial)
+        if (_resultsOverlay != null) _resultsOverlay.style.display = DisplayStyle.None;
+        if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
+        if (_comboLabel != null) _comboLabel.style.display = DisplayStyle.None;
+
+        if (!_hasSeenTutorial)
         {
             Time.timeScale = 0f; 
-            if (tutorialOverlay != null) tutorialOverlay.style.display = DisplayStyle.Flex;
-            if (hudContainer != null) hudContainer.style.display = DisplayStyle.None; 
+            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.Flex;
+            if (_hudContainer != null) _hudContainer.style.display = DisplayStyle.None; 
         }
         else
         {
             Time.timeScale = 1f;
-            if (tutorialOverlay != null) tutorialOverlay.style.display = DisplayStyle.None;
-            if (hudContainer != null) hudContainer.style.display = DisplayStyle.Flex; 
+            if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.None;
+            if (_hudContainer != null) _hudContainer.style.display = DisplayStyle.Flex; 
         }
     }
 
     private void OnDisable()
     {
-        if (startLevelButton != null) startLevelButton.clicked -= OnStartPlayingClicked;
-        if (restartButton != null) restartButton.clicked -= OnRestartClicked;
+        if (_startLevelButton != null) _startLevelButton.clicked -= OnStartPlayingClicked;
+        if (_restartButton != null) _restartButton.clicked -= OnRestartClicked;
+        if (_resumeButton != null) _resumeButton.clicked -= ResumeGame;
+        if (_quitButton != null) _quitButton.clicked -= QuitToMenu;
+    }
+
+    private void Update()
+    {
+        if (!_hasSeenTutorial) return;
+        
+        if (_resultsOverlay != null && _resultsOverlay.style.display == DisplayStyle.Flex) return;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        }
+    }
+
+    private void TogglePause()
+    {
+        _isPaused = !_isPaused;
+        if (_isPaused)
+        {
+            Time.timeScale = 0f;
+            if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.Flex;
+            if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        }
+        else
+        {
+            ResumeGame();
+        }
+    }
+
+    private void ResumeGame()
+    {
+        _isPaused = false;
+        Time.timeScale = 1f;
+        if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks(); 
+    }
+
+    private void QuitToMenu()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks(); 
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("MainMenuScene"); 
     }
 
     private void OnStartPlayingClicked()
     {
-        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
         
-        hasSeenTutorial = true; 
-        if (tutorialOverlay != null) tutorialOverlay.style.display = DisplayStyle.None;
-        if (hudContainer != null) hudContainer.style.display = DisplayStyle.Flex; 
+        _hasSeenTutorial = true; 
+        if (_tutorialOverlay != null) _tutorialOverlay.style.display = DisplayStyle.None;
+        if (_hudContainer != null) _hudContainer.style.display = DisplayStyle.Flex; 
         Time.timeScale = 1f;
     }
 
     private void OnRestartClicked()
     {
-        if (buttonClickFeedback != null) buttonClickFeedback.PlayFeedbacks(); // <-- Sonido de botón
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
         
-        // Wait a tiny bit (ignore timescale) or just play it normally (it survives scene loads if persistent)
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
 
-    public void ActualizarPisos(int pisosConstruidos, int metaDePisos)
+    public void ActualizarPisos(int floorsBuilt, int targetFloors)
     {
-        if (scoreLabel != null && pisosConstruidos != oldPisos) 
+        if (_scoreLabel != null && floorsBuilt != _oldFloors) 
         {
-            scoreLabel.text = $"PISOS: {pisosConstruidos} / {metaDePisos}";
-            oldPisos = pisosConstruidos;
+            _scoreLabel.text = $"PISOS: {floorsBuilt} / {targetFloors}";
+            _oldFloors = floorsBuilt;
         }
     }
 
-    public void ActualizarVidas(int vidasRestantes)
+    public void ActualizarVidas(int remainingLives)
     {
-        if (livesLabel != null && vidasRestantes != oldVidas) 
+        if (_livesLabel != null && remainingLives != _oldLives) 
         {
-            livesLabel.text = $"VIDAS: {vidasRestantes}";
-            oldVidas = vidasRestantes;
+            _livesLabel.text = $"VIDAS: {remainingLives}";
+            _oldLives = remainingLives;
         }
     }
 
-
-    public void MostrarCombo(int comboActual)
+    public void MostrarCombo(int currentCombo)
     {
-        if (comboLabel == null || comboActual == oldCombo) return;
-        oldCombo = comboActual;
+        if (_comboLabel == null || currentCombo == _oldCombo) return;
+        _oldCombo = currentCombo;
 
-        if (comboActual > 1)
+        if (currentCombo > 1)
         {
-            comboLabel.style.display = DisplayStyle.Flex;
-            comboLabel.text = $"x{comboActual}!";
+            _comboLabel.style.display = DisplayStyle.Flex;
+            _comboLabel.text = $"x{currentCombo}!";
 
-            if (comboActual >= 10)
-                comboLabel.style.color = new StyleColor(Color.red);
-            else if (comboActual >= 5)
-                comboLabel.style.color = new StyleColor(Color.magenta);
-            else
-                comboLabel.style.color = new StyleColor(Color.yellow);
+            _comboLabel.style.color = new StyleColor(Color.yellow);
 
-            comboLabel.AddToClassList("combo-pop");
+            _comboLabel.AddToClassList("combo-pop");
             
             Invoke("ResetComboPop", 0.15f);
         }
         else
         {
-            comboLabel.style.display = DisplayStyle.None;
+            _comboLabel.style.display = DisplayStyle.None;
         }
     }
 
     private void ResetComboPop()
     {
-        if (comboLabel != null) comboLabel.RemoveFromClassList("combo-pop");
+        if (_comboLabel != null) _comboLabel.RemoveFromClassList("combo-pop");
     }
 
-    public void MostrarGameOver(bool victoria)
+    public void MostrarGameOver(bool isVictory)
     {
-        if (resultsOverlay == null || resultTitleLabel == null) return;
+        if (_resultsOverlay == null || _resultTitleLabel == null) return;
 
-        if (comboLabel != null) comboLabel.style.display = DisplayStyle.None;
-        if (hudContainer != null) hudContainer.style.display = DisplayStyle.None;
+        if (_comboLabel != null) _comboLabel.style.display = DisplayStyle.None;
+        if (_hudContainer != null) _hudContainer.style.display = DisplayStyle.None;
 
         Time.timeScale = 0f;
 
-        resultsOverlay.style.display = DisplayStyle.Flex;
+        _resultsOverlay.style.display = DisplayStyle.Flex;
 
-        if (victoria)
+        if (isVictory)
         {
-            resultTitleLabel.text = "¡CONSTRUIDO!";
-            resultTitleLabel.style.color = new StyleColor(Color.green);
+            _resultTitleLabel.text = "TYPED LIKE A GOOD BOY";
+            _resultTitleLabel.style.color = new StyleColor(Color.black);
         }
         else
         {
-            resultTitleLabel.text = "COLAPSO";
-            resultTitleLabel.style.color = new StyleColor(Color.red);
+            _resultTitleLabel.text = "SKILL ISSUE";
+            _resultTitleLabel.style.color = new StyleColor(Color.black);
         }
     }
 }

@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4e5a7f8472e8d4da12db58812bcf52, type: 3}
   m_Name: Level_02
   m_EditorClassIdentifier: 
-  maxLives: 3
-  levelIndex: 2
-  levelName: "Alba\xF1il Medio"
-  targetFloors: 50
-  baseTimePerWord: 600
-  scoreBonus: 100
-  wordPool:
+  MaxLives: 3
+  LevelIndex: 2
+  LevelName: TU CULO
+  TargetFloors: 50
+  BaseTimePerWord: 50
+  ScoreBonus: 0
+  WordPool:
   - DOCTOR SIMI
   - MEDIO METRO
   - PESO PLUMA

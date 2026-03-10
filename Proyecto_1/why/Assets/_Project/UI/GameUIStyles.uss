@@ -35,8 +35,7 @@
     font-size: 90px; /* <-- REDUCIDO para que quepa todo */
     color: rgb(59, 61, 63);
     -unity-font-style: bold;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     margin-top: 0;
     margin-bottom: 2%; 
 }
@@ -45,8 +44,7 @@
     font-size: 250px;
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     margin-bottom: 80px; 
 }
 
@@ -73,8 +71,7 @@
     color: rgb(59, 61, 63);
     align-self: flex-start;
     -unity-font-style: bold;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     margin: 0;
     margin-top: 15px;
     padding: 0;
@@ -89,18 +86,42 @@
     align-self: flex-start;
     justify-self: flex-start;
     -unity-text-align: left;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     padding: 0;
     margin-bottom: 50px;
     
 }
 
-/* BOTONES */
-#StartLevelButton, #RestartButton {
-    min-width: 400px; 
-    margin-top: 20px; /* <-- REDUCIDO de 40 a 20 para subir el botón */
-    margin-bottom: 10px;
+/* BOTONES COMUNES (Mismo estilo que el menú principal) */
+#StartLevelButton, #RestartButton, #ResumeButton, #QuitButton {
+    min-width: 400px;
+    font-size: 70px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(162, 17, 83);
+    border-color: transparent;
+    border-radius: 60px;
+    border-width: 0;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    -unity-text-align: middle-center;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    transition-duration: 0.2s;
+    transition-property: background-color, scale;
+}
+
+#StartLevelButton:hover, #RestartButton:hover, #ResumeButton:hover, #QuitButton:hover {
+    background-color: rgb(69, 7, 36);
+    scale: 1.05;
+}
+
+#StartLevelButton:active, #RestartButton:active, #ResumeButton:active, #QuitButton:active {
+    scale: 1.05;
+    background-color: rgb(137, 137, 137);
 }
 
 /* ========================================== */
@@ -120,8 +141,7 @@
 .hud-text {
     font-size: 80px;
     color: rgb(255, 255, 255);
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.7); 
 }
 
@@ -130,18 +150,39 @@
 /* ========================================== */
 
 #ComboLabel {
+    /* 1. Lo sacamos del flujo de flexbox para que no empuje los otros textos */
     position: absolute;
-    top: 25%; 
-    width: 100%;
+    
+    /* 2. Lo centramos exactamente en medio del #HUDContainer */
+    left: 50%;
+    top: 50%; /* Se centrará verticalmente respecto a los textos del HUD */
+    
+    /* 3. Ajuste matemático exacto (Mitad de 220px) */
+    margin-left: -110px; 
+    margin-top: -110px;  
+    
+    /* 4. Forma y bordes */
+    width: 220px; 
+    height: 220px; 
+    border-radius: 50%; 
+    border-color: rgb(255, 255, 255); 
+    border-width: 8px; 
+    
+    /* 5. Colores y alineación */
+    background-color: rgb(162, 17, 83); /* Tu guinda/magenta */
     -unity-text-align: middle-center;
-    font-size: 150px;
-    color: rgb(255, 255, 0); 
+    
+    /* 6. Tipografía */
+    font-size: 110px; 
+    color: rgb(255, 255, 255); 
     -unity-font: resource("BebasNeue-Regular");
     -unity-font-definition: initial;
     text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
-    display: none; 
     
-    /* Magia web: Transición suave para el efecto de "rebote" */
+    /* Lo dejamos visible para que lo veas en el UI Builder (recuerda ocultarlo después) */
+    /* display: none; */ 
+    
+    /* Animación del Pop */
     transition-duration: 0.15s;
     transition-property: scale, color;
 }
@@ -167,8 +208,7 @@
     font-size: 110px; /* Reducido ligeramente de 130px para que quepa bien en la caja */
     color: rgb(255, 255, 255);
     -unity-font-style: bold;
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.8);
     margin-bottom: 40px; /* Más separación de la barra de tiempo */
     letter-spacing: 3px;
@@ -196,8 +236,8 @@
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
     
     /* 6. Un borde sutil opcional para definirlo más */
-    border-width: 3px;
-    border-color: rgba(255, 255, 255, 0.1); /* Blanco muy transparente */
+    border-width: 10px;
+    border-color: rgba(255, 255, 255, 0.1); 
 }
 
 /* El fondo gris de la barra de tiempo */
@@ -215,6 +255,8 @@
     height: 100%;
     background-color: rgb(173, 186, 152); 
     border-radius: 15px;
+    border-color: rgb(255, 255, 255); 
+    border-width: 4px; 
 }
 
 /* ========================================== */
@@ -251,3 +293,29 @@
 #RulesScrollView .unity-base-slider__dragger:hover {
     background-color: rgb(173, 186, 152); /* Cambia a tu verde militar al pasar el mouse */
 }
+
+/* ========================================== */
+/* 6. PANTALLA DE PAUSA                       */
+/* ========================================== */
+
+/* Fondo oscuro que cubre todo y centra el contenido */
+#PauseOverlay {
+    position: absolute;
+    left: 0; right: 0; top: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.95); 
+    align-items: center; 
+    justify-content: center; 
+    /* display: none; <-- Descomenta esto después de estilizar en UI Builder para ocultarlo por defecto */
+}
+
+/* El título de "PAUSA" */
+#PauseTitle {
+    font-size: 150px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    margin-bottom: 80px; /* Da un buen espacio antes de los botones */
+    text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Los botones ahora comparten estilo con #StartLevelButton arriba */

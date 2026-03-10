@@ -7,29 +7,29 @@ public class BuildingManager : MonoBehaviour
 {
     [Header("Configuración de Alturas")]
     [Tooltip("Altura exacta del bloque de concreto base")]
-    [SerializeField] private float foundationHeight = 0.5f; 
+    [SerializeField] private float _foundationHeight = 4; 
     
     [Tooltip("Altura exacta de cada piso residencial")]
-    [SerializeField] private float roomHeight = 3.0f; 
+    [SerializeField] private float _roomHeight = 3.7f; 
 
     [Header("Referencias a Prefabs")]
-    [SerializeField] private GameObject foundationPrefab; 
-    [SerializeField] private GameObject roomPrefab;       
+    [SerializeField] private GameObject _foundationPrefab; 
+    [SerializeField] private GameObject _roomPrefab;       
     
     [Header("Efectos Visuales y Sonoros")]
-    [SerializeField] private GameObject dustEffectPrefab; 
+    [SerializeField] private GameObject _dustEffectPrefab; 
     [Tooltip("Feedback de Feel que se reproducirá al construir un piso")]
-    [SerializeField] private MMF_Player floorBuiltFeedback; 
+    [SerializeField] private MMF_Player _floorBuiltFeedback; 
     
 
     [Header("Configuración de Spawn")]
     [Tooltip("Altura desde donde cae el piso al instanciarse")]
-    [SerializeField] private float spawnHeightOffset = 5f;
+    [SerializeField] private float _spawnHeightOffset = 5f;
 
-    private List<GameObject> activeFloors = new List<GameObject>(); 
-    public int ActiveFloorCount => activeFloors.Count;
-    private Stack<GameObject> floorPool = new Stack<GameObject>();
-    private GameObject foundationInstance; 
+    private List<GameObject> _activeFloors = new List<GameObject>(); 
+    public int ActiveFloorCount => _activeFloors.Count;
+    private Stack<GameObject> _floorPool = new Stack<GameObject>();
+    private GameObject _foundationInstance; 
 
     private void Start()
     {
@@ -38,33 +38,33 @@ public class BuildingManager : MonoBehaviour
 
     private void SpawnFoundation()
     {
-        foundationInstance = Instantiate(foundationPrefab, transform.position, Quaternion.identity);
-        foundationInstance.transform.SetParent(transform);
+        _foundationInstance = Instantiate(_foundationPrefab, transform.position, Quaternion.identity);
+        _foundationInstance.transform.SetParent(transform);
     }
 
     [ContextMenu("Test Add Floor")] 
     public void AddFloor()
     {
-        float currentY = transform.position.y + foundationHeight + (activeFloors.Count * roomHeight);
+        float currentY = transform.position.y + _foundationHeight + (_activeFloors.Count * _roomHeight);
         Vector3 spawnPos = new Vector3(transform.position.x, currentY, transform.position.z);
 
         GameObject newFloor = GetFloorFromPool(spawnPos);
         newFloor.transform.SetParent(transform);
 
-        newFloor.transform.position += Vector3.up * spawnHeightOffset; 
+        newFloor.transform.position += Vector3.up * _spawnHeightOffset; 
         newFloor.transform.DOMoveY(spawnPos.y, 0.4f).SetEase(Ease.OutBounce).SetLink(newFloor);
 
-        if (dustEffectPrefab != null)
+        if (_dustEffectPrefab != null)
         {
-            Instantiate(dustEffectPrefab, spawnPos, Quaternion.identity);
+            Instantiate(_dustEffectPrefab, spawnPos, Quaternion.identity);
         }
 
-        if (floorBuiltFeedback != null)
+        if (_floorBuiltFeedback != null)
         {
-            floorBuiltFeedback.PlayFeedbacks();
+            _floorBuiltFeedback.PlayFeedbacks();
         }
 
-        activeFloors.Add(newFloor);
+        _activeFloors.Add(newFloor);
         
         if (GameManager.Instance != null) GameManager.Instance.AddFloorScore();
     }
@@ -77,20 +77,20 @@ public class BuildingManager : MonoBehaviour
             GameManager.Instance.RemoveFloorScore();
         }
 
-        if (activeFloors.Count == 0)
+        if (_activeFloors.Count == 0)
         {
             return;
         }
 
-        GameObject floorToRemove = activeFloors[activeFloors.Count - 1];
+        GameObject floorToRemove = _activeFloors[_activeFloors.Count - 1];
         
-        if (dustEffectPrefab != null)
+        if (_dustEffectPrefab != null)
         {
-            Instantiate(dustEffectPrefab, floorToRemove.transform.position, Quaternion.identity);
+            Instantiate(_dustEffectPrefab, floorToRemove.transform.position, Quaternion.identity);
         }
 
        
-        activeFloors.RemoveAt(activeFloors.Count - 1);
+        _activeFloors.RemoveAt(_activeFloors.Count - 1);
 
 
         floorToRemove.transform.DOShakePosition(0.2f, 0.5f).SetLink(floorToRemove).OnComplete(() => ReturnFloorToPool(floorToRemove));
@@ -98,9 +98,9 @@ public class BuildingManager : MonoBehaviour
 
     private GameObject GetFloorFromPool(Vector3 position)
     {
-        if (floorPool.Count > 0)
+        if (_floorPool.Count > 0)
         {
-            GameObject floor = floorPool.Pop();
+            GameObject floor = _floorPool.Pop();
             floor.transform.position = position;
             floor.transform.rotation = Quaternion.identity;
             floor.SetActive(true);
@@ -108,13 +108,13 @@ public class BuildingManager : MonoBehaviour
         }
         else
         {
-            return Instantiate(roomPrefab, position, Quaternion.identity);
+            return Instantiate(_roomPrefab, position, Quaternion.identity);
         }
     }
 
     private void ReturnFloorToPool(GameObject floor)
     {
         floor.SetActive(false);
-        floorPool.Push(floor);
+        _floorPool.Push(floor);
     }
 }
