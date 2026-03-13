@@ -1,9 +1,16 @@
 using UnityEngine;
 using DG.Tweening;
 
+public enum GameMode
+{
+    Levels,
+    Infinite
+}
+
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    public static GameMode SelectedMode = GameMode.Levels;
 
     [Header("Configuración")]
     public LevelData LevelData; 
@@ -23,7 +30,13 @@ public class GameManager : MonoBehaviour
         if (Instance == null) 
         {
             Instance = this;
-            DOTween.SetTweensCapacity(500, 50); 
+            DOTween.SetTweensCapacity(500, 50);
+
+            // Evita que el navegador intercepte teclas (R, F, Tab, etc.)
+            // Solo se compila en builds WebGL, no afecta al Editor
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            WebGLInput.captureAllKeyboardInput = true;
+            #endif
         }
         else 
         {
@@ -50,7 +63,8 @@ public class GameManager : MonoBehaviour
         _currentFloors++;
         UpdateProgressUI(); 
         
-        if (LevelData != null && _currentFloors >= LevelData.TargetFloors)
+        // Solo verificar victoria en modo Niveles
+        if (SelectedMode == GameMode.Levels && LevelData != null && _currentFloors >= LevelData.TargetFloors)
         {
             ShowGameOver(true);
         }

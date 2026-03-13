@@ -34,6 +34,12 @@ public class MainMenuController : MonoBehaviour
     private Button _playButton;
     private Button _exitButton;
 
+    // Modal de selección de modo
+    private VisualElement _modeSelectionOverlay;
+    private Button _levelsButton;
+    private Button _infiniteButton;
+    private Button _backButton;
+
     private bool _isTransitioning = false;
     private string _fullLoadingText = "LOADING..."; 
 
@@ -51,8 +57,17 @@ public class MainMenuController : MonoBehaviour
         _loadingScreen = root.Q<VisualElement>("LoadingScreen");
         _loadingTextLabel = root.Q<Label>("LoadingTextLabel"); 
 
+        // Modal de selección de modo
+        _modeSelectionOverlay = root.Q<VisualElement>("ModeSelectionOverlay");
+        _levelsButton = root.Q<Button>("LevelsButton");
+        _infiniteButton = root.Q<Button>("InfiniteButton");
+        _backButton = root.Q<Button>("BackButton");
+
         if (_playButton != null) _playButton.clicked += OnPlayClicked;
         if (_exitButton != null) _exitButton.clicked += OnExitClicked;
+        if (_levelsButton != null) _levelsButton.clicked += OnLevelsClicked;
+        if (_infiniteButton != null) _infiniteButton.clicked += OnInfiniteClicked;
+        if (_backButton != null) _backButton.clicked += OnBackClicked;
 
         if (_finalTextContainer != null)
         {
@@ -65,6 +80,12 @@ public class MainMenuController : MonoBehaviour
             _loadingScreen.style.opacity = 0f;
             _loadingScreen.style.display = DisplayStyle.None;
         }
+
+        if (_modeSelectionOverlay != null)
+        {
+            _modeSelectionOverlay.style.opacity = 0f;
+            _modeSelectionOverlay.style.display = DisplayStyle.None;
+        }
         
         if (_loadingTextLabel != null) _loadingTextLabel.text = "";
     }
@@ -73,6 +94,9 @@ public class MainMenuController : MonoBehaviour
     {
         if (_playButton != null) _playButton.clicked -= OnPlayClicked;
         if (_exitButton != null) _exitButton.clicked -= OnExitClicked;
+        if (_levelsButton != null) _levelsButton.clicked -= OnLevelsClicked;
+        if (_infiniteButton != null) _infiniteButton.clicked -= OnInfiniteClicked;
+        if (_backButton != null) _backButton.clicked -= OnBackClicked;
     }
 
     private void Update()
@@ -109,15 +133,56 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-
+    // Ahora abre el modal de modos en vez de cargar la escena directamente
     private void OnPlayClicked()
     {
         if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        ShowModeSelection();
+    }
 
+    private void ShowModeSelection()
+    {
+        if (_modeSelectionOverlay == null) return;
+
+        _modeSelectionOverlay.style.display = DisplayStyle.Flex;
+        DOTween.To(() => _modeSelectionOverlay.resolvedStyle.opacity, x => _modeSelectionOverlay.style.opacity = x, 1f, 0.3f);
+    }
+
+    private void HideModeSelection()
+    {
+        if (_modeSelectionOverlay == null) return;
+
+        DOTween.To(() => _modeSelectionOverlay.resolvedStyle.opacity, x => _modeSelectionOverlay.style.opacity = x, 0f, 0.3f)
+               .OnComplete(() => _modeSelectionOverlay.style.display = DisplayStyle.None);
+    }
+
+    private void OnLevelsClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        GameManager.SelectedMode = GameMode.Levels;
+        StartGameLoad();
+    }
+
+    private void OnInfiniteClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        GameManager.SelectedMode = GameMode.Infinite;
+        StartGameLoad();
+    }
+
+    private void OnBackClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        HideModeSelection();
+    }
+
+    private void StartGameLoad()
+    {
         if (string.IsNullOrEmpty(_gameSceneName)) return;
 
-        _playButton.SetEnabled(false);
-        _exitButton.SetEnabled(false);
+        _levelsButton.SetEnabled(false);
+        _infiniteButton.SetEnabled(false);
+        _backButton.SetEnabled(false);
 
         if (_loadingScreen != null)
         {
