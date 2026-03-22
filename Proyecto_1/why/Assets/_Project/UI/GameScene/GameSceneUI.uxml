@@ -1,6 +1,6 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/_Project/UI/MainMenu/MainMenuStyles.uss?fileID=7433441132597879392&amp;guid=f26c94e07a6d12a4baacf48a139612d6&amp;type=3#MainMenuStyles" />
-    <Style src="project://database/Assets/_Project/UI/GameUIStyles.uss?fileID=7433441132597879392&amp;guid=479b323fa6289a04fa660ee700dd08ab&amp;type=3#GameUIStyles" />
+    <Style src="project://database/Assets/_Project/UI/GameScene/GameUIStyles.uss?fileID=7433441132597879392&amp;guid=479b323fa6289a04fa660ee700dd08ab&amp;type=3#GameUIStyles" />
     <ui:VisualElement name="HUDContainer" style="flex-grow: 1; display: flex;">
         <ui:Label text="PISOS: 0 / 10" name="ScoreLabel" class="hud-text" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:Label text="X" name="ComboLabel" style="display: flex; margin-top: 100px; position: relative; top: initial; left: auto; margin-left: 0; margin-right: 130px; margin-bottom: 0; align-items: center; justify-content: flex-end; align-self: center; -unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
@@ -46,9 +46,24 @@
             <ui:Button text="RETRY" name="RestartButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="PauseOverlay" style="flex-grow: 1; top: -2px; bottom: 3px; right: 0; left: 0; display: none;">
+    <ui:VisualElement name="PauseOverlay" style="flex-grow: 1; top: -2px; bottom: 3px; right: 0; left: 0; display: none; -unity-text-outline-color: rgb(0, 0, 0); background-color: rgb(0, 0, 0);">
         <ui:Label text="PAUSE" name="PauseTitle" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        
         <ui:Button text="KEEP TYPING" name="ResumeButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        <ui:Button text="SETTINGS" name="SettingsButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:Button text="QUIT GAME" name="QuitButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+
+        <ui:VisualElement name="SettingsOverlay" class="mode-overlay" style="display: none;">
+            <ui:VisualElement name="SettingsModal" class="mode-modal">
+                <ui:Label text="SETTINGS" name="SettingsTitle" class="mode-title" />
+                <ui:Label text="FPS LIMIT" name="PauseFPSLabel" class="settings-section-label" />
+                <ui:VisualElement name="PauseFPSRow" class="fps-row">
+                    <ui:Button text="60" name="PauseFPS60" class="fps-button fps-active" />
+                    <ui:Button text="75" name="PauseFPS75" class="fps-button" />
+                    <ui:Button text="144" name="PauseFPS144" class="fps-button" />
+                </ui:VisualElement>
+                <ui:Button text="Back" name="SettingsBackButton" class="mode-back-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

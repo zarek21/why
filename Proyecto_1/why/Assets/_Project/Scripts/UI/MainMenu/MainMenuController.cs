@@ -21,9 +21,9 @@ public class MainMenuController : MonoBehaviour
     [SerializeField] private string _gameSceneName = "GameScene";
     [SerializeField] private float _fadeToBlackDuration = 1.0f;
     [Tooltip("Tiempo de espera artificial (en segundos) para ver la pantalla de carga")]
-    [SerializeField] private float _artificialLoadTime = 6f;
+    [SerializeField] private float _artificialLoadTime = 4f;
     [Tooltip("Velocidad de escritura del texto 'CARGANDO...'")]
-    [SerializeField] private float _loadingTypeSpeed = 0.1f;
+    [SerializeField] private float _loadingTypeSpeed = 0.2f;
 
     private UIDocument _uiDocument;
     private Label _subtitleLabel; 
@@ -32,13 +32,21 @@ public class MainMenuController : MonoBehaviour
     private VisualElement _loadingScreen; 
     private Label _loadingTextLabel;
     private Button _playButton;
+    private Button _settingsButton;
     private Button _exitButton;
 
     // Modal de selección de modo
     private VisualElement _modeSelectionOverlay;
     private Button _levelsButton;
     private Button _infiniteButton;
-    private Button _backButton;
+    private Button _modeBackButton;
+
+    // Modal de settings
+    private VisualElement _settingsOverlay;
+    private Button _fps60Button;
+    private Button _fps75Button;
+    private Button _fps144Button;
+    private Button _settingsBackButton;
 
     private bool _isTransitioning = false;
     private string _fullLoadingText = "LOADING..."; 
@@ -52,6 +60,7 @@ public class MainMenuController : MonoBehaviour
         _finalTextContainer = root.Q<VisualElement>("finalTextContainer");
         
         _playButton = root.Q<Button>("PlayButton");
+        _settingsButton = root.Q<Button>("SettingsButton");
         _exitButton = root.Q<Button>("ExitButton"); 
         
         _loadingScreen = root.Q<VisualElement>("LoadingScreen");
@@ -61,13 +70,25 @@ public class MainMenuController : MonoBehaviour
         _modeSelectionOverlay = root.Q<VisualElement>("ModeSelectionOverlay");
         _levelsButton = root.Q<Button>("LevelsButton");
         _infiniteButton = root.Q<Button>("InfiniteButton");
-        _backButton = root.Q<Button>("BackButton");
+        _modeBackButton = root.Q<Button>("BackButton");
+
+        // Modal de settings
+        _settingsOverlay = root.Q<VisualElement>("SettingsOverlay");
+        _fps60Button = root.Q<Button>("FPS60Button");
+        _fps75Button = root.Q<Button>("FPS75Button");
+        _fps144Button = root.Q<Button>("FPS144Button");
+        _settingsBackButton = root.Q<Button>("SettingsBackButton");
 
         if (_playButton != null) _playButton.clicked += OnPlayClicked;
+        if (_settingsButton != null) _settingsButton.clicked += OnSettingsClicked;
         if (_exitButton != null) _exitButton.clicked += OnExitClicked;
         if (_levelsButton != null) _levelsButton.clicked += OnLevelsClicked;
         if (_infiniteButton != null) _infiniteButton.clicked += OnInfiniteClicked;
-        if (_backButton != null) _backButton.clicked += OnBackClicked;
+        if (_modeBackButton != null) _modeBackButton.clicked += OnModeBackClicked;
+        if (_fps60Button != null) _fps60Button.clicked += () => SetFPS(60);
+        if (_fps75Button != null) _fps75Button.clicked += () => SetFPS(75);
+        if (_fps144Button != null) _fps144Button.clicked += () => SetFPS(144);
+        if (_settingsBackButton != null) _settingsBackButton.clicked += OnSettingsBackClicked;
 
         if (_finalTextContainer != null)
         {
@@ -86,17 +107,28 @@ public class MainMenuController : MonoBehaviour
             _modeSelectionOverlay.style.opacity = 0f;
             _modeSelectionOverlay.style.display = DisplayStyle.None;
         }
+
+        if (_settingsOverlay != null)
+        {
+            _settingsOverlay.style.opacity = 0f;
+            _settingsOverlay.style.display = DisplayStyle.None;
+        }
         
         if (_loadingTextLabel != null) _loadingTextLabel.text = "";
+
+        // Sincronizar el estado visual de los botones FPS
+        SyncFPSButtons(_fps60Button, _fps75Button, _fps144Button);
     }
 
     private void OnDisable() 
     {
         if (_playButton != null) _playButton.clicked -= OnPlayClicked;
+        if (_settingsButton != null) _settingsButton.clicked -= OnSettingsClicked;
         if (_exitButton != null) _exitButton.clicked -= OnExitClicked;
         if (_levelsButton != null) _levelsButton.clicked -= OnLevelsClicked;
         if (_infiniteButton != null) _infiniteButton.clicked -= OnInfiniteClicked;
-        if (_backButton != null) _backButton.clicked -= OnBackClicked;
+        if (_modeBackButton != null) _modeBackButton.clicked -= OnModeBackClicked;
+        if (_settingsBackButton != null) _settingsBackButton.clicked -= OnSettingsBackClicked;
     }
 
     private void Update()
@@ -133,7 +165,8 @@ public class MainMenuController : MonoBehaviour
         }
     }
 
-    // Ahora abre el modal de modos en vez de cargar la escena directamente
+
+    // MODAL DE SELECCIÓN DE MODO 
     private void OnPlayClicked()
     {
         if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
@@ -143,7 +176,6 @@ public class MainMenuController : MonoBehaviour
     private void ShowModeSelection()
     {
         if (_modeSelectionOverlay == null) return;
-
         _modeSelectionOverlay.style.display = DisplayStyle.Flex;
         DOTween.To(() => _modeSelectionOverlay.resolvedStyle.opacity, x => _modeSelectionOverlay.style.opacity = x, 1f, 0.3f);
     }
@@ -151,7 +183,6 @@ public class MainMenuController : MonoBehaviour
     private void HideModeSelection()
     {
         if (_modeSelectionOverlay == null) return;
-
         DOTween.To(() => _modeSelectionOverlay.resolvedStyle.opacity, x => _modeSelectionOverlay.style.opacity = x, 0f, 0.3f)
                .OnComplete(() => _modeSelectionOverlay.style.display = DisplayStyle.None);
     }
@@ -170,11 +201,76 @@ public class MainMenuController : MonoBehaviour
         StartGameLoad();
     }
 
-    private void OnBackClicked()
+    private void OnModeBackClicked()
     {
         if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
         HideModeSelection();
     }
+
+
+    // MODAL DE SETTINGS
+    private void OnSettingsClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        ShowSettings();
+    }
+
+    private void ShowSettings()
+    {
+        if (_settingsOverlay == null) return;
+        _settingsOverlay.style.display = DisplayStyle.Flex;
+        DOTween.To(() => _settingsOverlay.resolvedStyle.opacity, x => _settingsOverlay.style.opacity = x, 1f, 0.3f);
+    }
+
+    private void HideSettings()
+    {
+        if (_settingsOverlay == null) return;
+        DOTween.To(() => _settingsOverlay.resolvedStyle.opacity, x => _settingsOverlay.style.opacity = x, 0f, 0.3f)
+               .OnComplete(() => _settingsOverlay.style.display = DisplayStyle.None);
+    }
+
+    private void OnSettingsBackClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        HideSettings();
+    }
+
+    // =============================================
+    // FPS — Lógica compartida
+    // =============================================
+
+    private void SetFPS(int fps)
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+
+        if (LimitFPS.Instance != null)
+        {
+            LimitFPS.Instance.SetFPS(fps);
+        }
+        else
+        {
+            Application.targetFrameRate = fps;
+        }
+
+        SyncFPSButtons(_fps60Button, _fps75Button, _fps144Button);
+    }
+
+    public static void SyncFPSButtons(Button btn60, Button btn75, Button btn144)
+    {
+        int currentFPS = LimitFPS.Instance != null ? LimitFPS.Instance.GetCurrentFPS() : Application.targetFrameRate;
+
+        btn60?.RemoveFromClassList("fps-active");
+        btn75?.RemoveFromClassList("fps-active");
+        btn144?.RemoveFromClassList("fps-active");
+
+        if (currentFPS <= 60) btn60?.AddToClassList("fps-active");
+        else if (currentFPS <= 75) btn75?.AddToClassList("fps-active");
+        else btn144?.AddToClassList("fps-active");
+    }
+
+    // =============================================
+    // CARGA DE ESCENA
+    // =============================================
 
     private void StartGameLoad()
     {
@@ -182,7 +278,7 @@ public class MainMenuController : MonoBehaviour
 
         _levelsButton.SetEnabled(false);
         _infiniteButton.SetEnabled(false);
-        _backButton.SetEnabled(false);
+        _modeBackButton.SetEnabled(false);
 
         if (_loadingScreen != null)
         {

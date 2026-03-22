@@ -1,6 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
+// MODOS DE JUEGO
 public enum GameMode
 {
     Levels,
@@ -32,8 +33,7 @@ public class GameManager : MonoBehaviour
             Instance = this;
             DOTween.SetTweensCapacity(500, 50);
 
-            // Evita que el navegador intercepte teclas (R, F, Tab, etc.)
-            // Solo se compila en builds WebGL, no afecta al Editor
+            // TECLAS EN WEB GL 
             #if UNITY_WEBGL && !UNITY_EDITOR
             WebGLInput.captureAllKeyboardInput = true;
             #endif
@@ -42,6 +42,8 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+
     }
     
     private void Start()

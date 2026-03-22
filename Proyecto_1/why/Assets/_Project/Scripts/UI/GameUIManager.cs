@@ -22,8 +22,18 @@ public class GameUIManager : MonoBehaviour
     [Header("Pausa")]
     private VisualElement _pauseOverlay;
     private Button _resumeButton;
+    private Button _settingsButton;
     private Button _quitButton;
     private bool _isPaused = false;
+
+    // Modal de Settings en pausa
+    private VisualElement _settingsOverlay;
+    private Button _settingsBackButton;
+
+    // FPS en pausa
+    private Button _pauseFps60;
+    private Button _pauseFps75;
+    private Button _pauseFps144;
 
     private int _oldFloors = -1;
     private int _oldLives = -1;
@@ -51,15 +61,31 @@ public class GameUIManager : MonoBehaviour
 
         _pauseOverlay = root.Q<VisualElement>("PauseOverlay");
         _resumeButton = root.Q<Button>("ResumeButton");
+        _settingsButton = root.Q<Button>("SettingsButton");
         _quitButton = root.Q<Button>("QuitButton");
+
+        // Modal de Settings
+        _settingsOverlay = root.Q<VisualElement>("SettingsOverlay");
+        _settingsBackButton = root.Q<Button>("SettingsBackButton");
+
+        // FPS en pausa
+        _pauseFps60 = root.Q<Button>("PauseFPS60");
+        _pauseFps75 = root.Q<Button>("PauseFPS75");
+        _pauseFps144 = root.Q<Button>("PauseFPS144");
 
         if (_startLevelButton != null) _startLevelButton.clicked += OnStartPlayingClicked;
         if (_restartButton != null) _restartButton.clicked += OnRestartClicked;
         if (_resumeButton != null) _resumeButton.clicked += ResumeGame;
+        if (_settingsButton != null) _settingsButton.clicked += ShowSettings;
         if (_quitButton != null) _quitButton.clicked += QuitToMenu;
+        if (_settingsBackButton != null) _settingsBackButton.clicked += HideSettings;
+        if (_pauseFps60 != null) _pauseFps60.clicked += () => SetPauseFPS(60);
+        if (_pauseFps75 != null) _pauseFps75.clicked += () => SetPauseFPS(75);
+        if (_pauseFps144 != null) _pauseFps144.clicked += () => SetPauseFPS(144);
 
         if (_resultsOverlay != null) _resultsOverlay.style.display = DisplayStyle.None;
         if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
+        if (_settingsOverlay != null) _settingsOverlay.style.display = DisplayStyle.None;
         if (_comboLabel != null) _comboLabel.style.display = DisplayStyle.None;
 
         if (!_hasSeenTutorial)
@@ -81,7 +107,10 @@ public class GameUIManager : MonoBehaviour
         if (_startLevelButton != null) _startLevelButton.clicked -= OnStartPlayingClicked;
         if (_restartButton != null) _restartButton.clicked -= OnRestartClicked;
         if (_resumeButton != null) _resumeButton.clicked -= ResumeGame;
+        if (_settingsButton != null) _settingsButton.clicked -= ShowSettings;
         if (_quitButton != null) _quitButton.clicked -= QuitToMenu;
+        if (_settingsBackButton != null) _settingsBackButton.clicked -= HideSettings;
+        // Nota: los lambdas de FPS no se pueden desuscribir, pero se limpian con OnDestroy
     }
 
     private void Update()
@@ -104,6 +133,7 @@ public class GameUIManager : MonoBehaviour
             Time.timeScale = 0f;
             if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.Flex;
             if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+            MainMenuController.SyncFPSButtons(_pauseFps60, _pauseFps75, _pauseFps144);
         }
         else
         {
@@ -116,7 +146,20 @@ public class GameUIManager : MonoBehaviour
         _isPaused = false;
         Time.timeScale = 1f;
         if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
+        if (_settingsOverlay != null) _settingsOverlay.style.display = DisplayStyle.None;
         if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks(); 
+    }
+
+    private void ShowSettings()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        if (_settingsOverlay != null) _settingsOverlay.style.display = DisplayStyle.Flex;
+    }
+
+    private void HideSettings()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        if (_settingsOverlay != null) _settingsOverlay.style.display = DisplayStyle.None;
     }
 
     private void QuitToMenu()
@@ -124,6 +167,18 @@ public class GameUIManager : MonoBehaviour
         if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks(); 
         Time.timeScale = 1f;
         SceneManager.LoadScene("MainMenuScene"); 
+    }
+
+    private void SetPauseFPS(int fps)
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+
+        if (LimitFPS.Instance != null)
+            LimitFPS.Instance.SetFPS(fps);
+        else
+            Application.targetFrameRate = fps;
+
+        MainMenuController.SyncFPSButtons(_pauseFps60, _pauseFps75, _pauseFps144);
     }
 
     private void OnStartPlayingClicked()

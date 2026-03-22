@@ -90,3 +90,74 @@
     color: rgb(255, 255, 255);
     scale: 1.05;
 }
+
+/* ========================================== */
+/* SETTINGS — FPS BUTTONS                     */
+/* ========================================== */
+
+.settings-section-label {
+    font-size: 60px;
+    color: rgb(100, 100, 100);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    margin-bottom: 20px;
+}
+
+.fps-row {
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.fps-button {
+    background-image: none;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    font-size: 50px;
+    color: rgb(59, 61, 63);
+    -unity-font-style: bold;
+    background-color: transparent;
+    border-color: rgb(59, 61, 63);
+    border-width: 3px;
+    border-radius: 30px;
+    padding: 10px 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    min-width: 120px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.2s;
+    transition-property: background-color, color, scale;
+}
+
+.fps-button:hover {
+    background-color: rgb(59, 61, 63);
+    color: rgb(255, 255, 255);
+    scale: 1.05;
+}
+
+.fps-active {
+    background-color: rgb(162, 17, 83);
+    border-color: rgb(162, 17, 83);
+    color: rgb(255, 255, 255);
+}
+
+.fps-active:hover {
+    background-color: rgb(69, 7, 36);
+    border-color: rgb(69, 7, 36);
+}
+
+/* Panel FPS en pausa */
+.pause-fps-panel {
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.pause-fps-label {
+    font-size: 50px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    margin-bottom: 10px;
+}
