@@ -1,0 +1,45 @@
+=== Nomenclatura Estándar para Proyectos C# (Unity) ===
+
+1. Variables Privadas (Private)
+   - Formato: _camelCase 
+   - Llevan un guion bajo al inicio. La primera palabra va en minúscula y cada nueva palabra empieza con mayúscula.
+   - Ejemplo: private int _playerHealth;
+
+2. Variables Serializadas (Inspector de Unity)
+   - Formato: Mismo que las privadas (_camelCase), pero precedidas por [SerializeField].
+   - Regla: No usar variables "public" únicamente para exponerlas en el Inspector.
+   - Ejemplo: [SerializeField] private float _movementSpeed;
+
+3. Propiedades y Variables Públicas (Public / Properties)
+   - Formato: PascalCase
+   - Inician con mayúscula. Se fomenta el uso de propiedades para proteger los datos (encapsulamiento).
+   - Ejemplo: public int CurrentScore { get; private set; }
+   - Ejemplo: public float JumpForce;
+
+4. Funciones y Métodos
+   - Formato: PascalCase
+   - Todo método o función inicia con mayúscula. Los nombres deben denotar acciones (verbos).
+   - Ejemplo: private void CalculateDamage()
+   - Ejemplo: public void InitializeSystem()
+
+5. Clases, Structs, Enums e Interfaces
+   - Clases/Structs/Enums: PascalCase (La primera letra de cada palabra va en mayúscula).
+   - Interfaces: IPascalCase (La primera letra siempre es una 'I' mayúscula seguida del nombre en PascalCase).
+   - Ejemplos: 
+     public class PlayerController
+     public enum GameState
+     public interface IDamageable
+
+6. Constantes (Constants y Readonly)
+   - Formato: UPPER_SNAKE_CASE
+   - Todas las letras en mayúscula, separando las palabras por guiones bajos.
+   - Ejemplo: private const int MAX_INVENTORY_SLOTS = 20;
+
+7. Nombres de Archivos en el Motor
+   - Scripts (C#): Deben llamarse exactamente igual que la clase principal que contienen (Ej: PlayerController.cs).
+   - Activos (Prefabs, Materiales, etc.): PascalCase (Ej: MainCharacter_Prefab).
+
+=== Buenas Prácticas Generales Mínimas ===
+- Orden en Inspector: Usar [Header("Nombre del Grupo")] para agrupar variables lógicas y [Tooltip("...")] para explicar qué hace una variable confusa.
+- Claridad sobre Brevedad: Es preferible un nombre largo y claro que una abreviación misteriosa (usar _totalAttackPower en lugar de _tap).
+- Una Clase por Archivo: No declarar múltiples clases MonoBehaviour dentro del mismo archivo de script.
