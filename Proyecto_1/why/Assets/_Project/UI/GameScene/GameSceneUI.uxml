@@ -46,6 +46,7 @@
         
         <ui:Button text="KEEP TYPING" name="ResumeButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:Button text="SETTINGS" name="SettingsButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
+        <ui:Button text="SCOREBOARD" name="ScoreboardButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
         <ui:Button text="MAIN MENU" name="QuitButton" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;);" />
 
         <ui:VisualElement name="SettingsOverlay" class="mode-overlay" style="display: none;">
@@ -58,6 +59,20 @@
                     <ui:Button text="144" name="PauseFPS144" class="fps-button" />
                 </ui:VisualElement>
                 <ui:Button text="Back" name="SettingsBackButton" class="mode-back-button" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="ScoreboardOverlay" class="mode-overlay" style="display: none;">
+            <ui:VisualElement name="ScoreboardModal" class="mode-modal" style="display: flex; min-width: 700px;">
+                <ui:Label text="SCOREBOARD" name="ScoreboardTitle" class="mode-title" />
+                <ui:VisualElement name="ScoreboardTabs" style="flex-direction: row; justify-content: center; margin-bottom: 25px; width: 100%;">
+                    <ui:Button text="Levels" name="TabLevelsButton" class="fps-button fps-active" style="width: 200px;" />
+                    <ui:Button text="Infinite" name="TabInfiniteButton" class="fps-button" style="width: 200px;" />
+                </ui:VisualElement>
+                <ui:ScrollView name="ScoreboardList" horizontal-scroller-visibility="Hidden" mode="Vertical" style="flex-grow: 1; width: 100%; min-height: 250px; max-height: 400px; margin-bottom: 20px;">
+                    <!-- Cargado dinámicamente -->
+                </ui:ScrollView>
+                <ui:Button text="Back" name="ScoreboardBackButton" class="mode-back-button" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

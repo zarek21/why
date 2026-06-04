@@ -110,7 +110,7 @@
 }
 
 /* BOTONES COMUNES (Mismo estilo que el menú principal) */
-#StartLevelButton, #RestartButton, #ResumeButton, #QuitButton, #SettingsButton, #ResultsQuitButton {
+#StartLevelButton, #RestartButton, #ResumeButton, #QuitButton, #SettingsButton, #ResultsQuitButton, #ScoreboardButton {
     min-width: 400px;
     font-size: 70px;
     color: rgb(255, 255, 255);
@@ -131,12 +131,12 @@
     transition-property: background-color, scale;
 }
 
-#StartLevelButton:hover, #RestartButton:hover, #ResumeButton:hover, #QuitButton:hover, #SettingsButton:hover, #ResultsQuitButton:hover {
+#StartLevelButton:hover, #RestartButton:hover, #ResumeButton:hover, #QuitButton:hover, #SettingsButton:hover, #ResultsQuitButton:hover, #ScoreboardButton:hover {
     background-color: rgb(69, 7, 36);
     scale: 1.05;
 }
 
-#StartLevelButton:active, #RestartButton:active, #ResumeButton:active, #QuitButton:active, #SettingsButton:active, #ResultsQuitButton:active {
+#StartLevelButton:active, #RestartButton:active, #ResumeButton:active, #QuitButton:active, #SettingsButton:active, #ResultsQuitButton:active, #ScoreboardButton:active {
     scale: 1.05;
     background-color: rgb(137, 137, 137);
 }
