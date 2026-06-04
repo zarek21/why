@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class LevelData : ScriptableObject
 {
     [Header("Supervivencia")]
-    public int MaxLives = 3;
+    public int MaxLives = 5;
     
     [Header("Configuración del Nivel")]
     public int LevelIndex;
@@ -41,6 +41,9 @@ public class LevelData : ScriptableObject
             case 3:
                 WordPool.AddRange(GetWordsLevel3());
                 break;
+            case 4:
+                WordPool.AddRange(GetAllWordsCombined());
+                break;
         }
     }
 
@@ -57,7 +60,8 @@ public class LevelData : ScriptableObject
             "CAMARA", "PIVOTE", "CHANT", "CHIDO", "CHALE", "NETA", "WEY", "NO MAMES",
             "VERQ", "NMMMS", "LOL", "OMG", "XD", "UWU", "7U7", "F", "YOLO",
             "SWAG", "POSE", "FOTO", "INSTA", "TIKTOK", "TREND", "VIRAL", "LIVE",
-            "STORY", "REAL", "FAKE", "DRAMA", "TEA", "SPILL", "SLAY", "QUEEN"
+            "STORY", "REAL", "FAKE", "DRAMA", "TEA", "SPILL", "SLAY", "QUEEN",
+            "67", "SIX SEVEN"
         };
     }
 
@@ -175,7 +179,17 @@ public class LevelData : ScriptableObject
             "MICROFONO APAGAD", "PRENDE TU CAMARA", "NO TE ESCUCHAS", "SE TRABO TU NET",
             "INTERNET DE CARTON", "TELMEX INFINITUM", "IZZI FALLANDO", "TOTALPLAY LAG",
             "PING DE 500MS", "LAG EN EL CEREBRO", "AFK UN MOMENTO", "BRB YA VENGO",
-            "GG WP TEAM", "EZ MID GAP", "JUNGLEI DIFF", "SUPPORT NO WARDS"
+            "GG WP TEAM", "EZ MID GAP", "JUNGLEI DIFF", "SUPPORT NO WARDS",
+            "DAT BI GAH"
         };
+    }
+
+    public List<string> GetAllWordsCombined()
+    {
+        List<string> combined = new List<string>();
+        combined.AddRange(GetWordsLevel1());
+        combined.AddRange(GetWordsLevel2());
+        combined.AddRange(GetWordsLevel3());
+        return combined;
     }
 }

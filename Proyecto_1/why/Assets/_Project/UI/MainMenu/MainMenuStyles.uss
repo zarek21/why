@@ -161,3 +161,180 @@
     -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     margin-bottom: 10px;
 }
+
+/* ========================================== */
+/* SCOREBOARD                                 */
+/* ========================================== */
+
+.scoreboard-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(59, 61, 63, 0.1);
+    border-radius: 20px;
+    padding: 15px 30px;
+    margin-bottom: 10px;
+    width: 95%;
+}
+
+.scoreboard-rank-name {
+    font-size: 40px;
+    color: rgb(59, 61, 63);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    flex-grow: 1;
+}
+
+.scoreboard-score {
+    font-size: 40px;
+    color: rgb(162, 17, 83);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    margin-right: 40px;
+}
+
+.scoreboard-date {
+    font-size: 30px;
+    color: rgb(100, 100, 100);
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+}
+
+#ScoreboardList .unity-scroller--vertical {
+    width: 10px;
+    margin-right: 8px;
+}
+
+#ScoreboardList .unity-scroller--horizontal {
+    display: none !important;
+}
+
+#ScoreboardList .unity-scroller__low-button,
+#ScoreboardList .unity-scroller__high-button {
+    display: none;
+}
+
+#ScoreboardList .unity-base-slider__tracker {
+    background-color: rgba(59, 61, 63, 0.15);
+    border-width: 0;
+    border-radius: 5px;
+}
+
+#ScoreboardList .unity-base-slider__dragger {
+    background-color: rgb(162, 17, 83);
+    border-width: 0;
+    border-radius: 5px;
+}
+
+#ScoreboardList .unity-base-slider__dragger:hover {
+    background-color: rgb(69, 7, 36);
+}
+
+/* ========================================== */
+/* LEVEL SELECTOR SCROLLBAR STYLE             */
+/* ========================================== */
+
+#LevelsList .unity-scroller--vertical {
+    width: 10px;
+    margin-right: 8px;
+}
+
+#LevelsList .unity-scroller--horizontal {
+    display: none !important;
+}
+
+#LevelsList .unity-scroller__low-button,
+#LevelsList .unity-scroller__high-button {
+    display: none;
+}
+
+#LevelsList .unity-base-slider__tracker {
+    background-color: rgba(59, 61, 63, 0.15);
+    border-width: 0;
+    border-radius: 5px;
+}
+
+#LevelsList .unity-base-slider__dragger {
+    background-color: rgb(162, 17, 83);
+    border-width: 0;
+    border-radius: 5px;
+}
+
+#LevelsList .unity-base-slider__dragger:hover {
+    background-color: rgb(69, 7, 36);
+}
+
+/* ========================================== */
+/* LEVEL SELECTOR HUB                         */
+/* ========================================== */
+
+.level-row {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(59, 61, 63, 0.1);
+    border-radius: 20px;
+    padding: 20px 30px;
+    margin-bottom: 15px;
+    width: 95%;
+    transition-duration: 0.2s;
+    transition-property: background-color, scale;
+}
+
+.level-row:hover {
+    background-color: rgba(162, 17, 83, 0.15);
+    scale: 1.02;
+}
+
+.level-info-container {
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.level-name-label {
+    font-size: 45px;
+    color: rgb(59, 61, 63);
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+}
+
+.level-details-container {
+    flex-direction: row;
+    margin-top: 5px;
+}
+
+.level-detail-tag {
+    font-size: 24px;
+    color: rgb(255, 255, 255);
+    background-color: rgb(59, 61, 63);
+    border-radius: 10px;
+    padding: 4px 12px;
+    margin-right: 15px;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+}
+
+.level-detail-tag-purple {
+    background-color: rgb(162, 17, 83);
+}
+
+.level-play-button {
+    background-image: none;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    font-size: 36px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    background-color: rgb(162, 17, 83);
+    border-color: transparent;
+    border-radius: 20px;
+    padding: 10px 30px;
+    -unity-text-align: middle-center;
+    transition-duration: 0.2s;
+    transition-property: background-color, scale;
+    min-width: 150px;
+}
+
+.level-play-button:hover {
+    background-color: rgb(69, 7, 36);
+    scale: 1.05;
+}
+
+

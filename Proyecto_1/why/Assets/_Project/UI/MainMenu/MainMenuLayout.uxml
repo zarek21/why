@@ -5,6 +5,7 @@
         <ui:VisualElement name="finalTextContainer" picking-mode="Ignore" class="hidden" style="flex-grow: 1; opacity: 0; justify-content: center; align-self: center; align-content: center; align-items: center; flex-shrink: 1; width: 50%; font-size: 0; top: -22px; margin-top: 25px; display: flex;">
             <ui:Button text="Game Modes" name="PlayButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); display: flex; justify-content: center; align-items: center; align-self: center; align-content: center; margin-top: 30px;" />
             <ui:Button text="Settings" name="SettingsButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); display: flex; justify-content: center; align-items: center; align-self: center; align-content: center; margin-top: 30px;" />
+            <ui:Button text="Scoreboard" name="ScoreboardButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); display: flex; justify-content: center; align-items: center; align-self: center; align-content: center; margin-top: 30px;" />
             <ui:Button text="Exit Game" name="ExitButton" class="apple-button" style="-unity-font-definition: url(&quot;project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=faf509b83ba24ba4c8d5dc75f1154afd&amp;type=3#BebasNeue-Regular&quot;); display: flex; align-content: center; align-self: center; justify-content: center; align-items: center;" />
         </ui:VisualElement>
         <ui:VisualElement name="Keyboard3DContainer" style="flex-grow: 1; flex-basis: 1%; width: 244px; font-size: 5px;" />
@@ -30,7 +31,29 @@
             <ui:Button text="Back" name="SettingsBackButton" class="mode-back-button" />
         </ui:VisualElement>
     </ui:VisualElement>
-    <ui:VisualElement name="LoadingScreen" picking-mode="Ignore" style="flex-grow: 1; position: absolute; left: 0; top: 0; right: 0; bottom: 0; flex-direction: row; background-color: rgb(0, 0, 0); align-items: center; justify-content: center; align-content: center; display: none;">
-        <ui:Label text="LOADING..." name="LoadingTextLabel" style="font-size: 100px; -unity-font-definition: url(&quot;project://database/Assets/TextMesh%20Pro/Fonts/BebasNeue-Regular.ttf?fileID=12800000&amp;guid=f35d10cb3227b1a4cbbb053ba790bbb5&amp;type=3#BebasNeue-Regular&quot;); color: rgb(255, 255, 255);" />
+    <ui:VisualElement name="ScoreboardOverlay" class="mode-overlay" style="display: none;">
+        <ui:VisualElement name="ScoreboardModal" class="mode-modal" style="display: flex; min-width: 700px;">
+            <ui:Label text="SCOREBOARD" name="ScoreboardTitle" class="mode-title" />
+            <ui:VisualElement name="ScoreboardTabs" style="flex-direction: row; justify-content: center; margin-bottom: 25px; width: 100%;">
+                <ui:Button text="Levels" name="TabLevelsButton" class="fps-button fps-active" style="width: 200px;" />
+                <ui:Button text="Infinite" name="TabInfiniteButton" class="fps-button" style="width: 200px;" />
+            </ui:VisualElement>
+            <ui:ScrollView name="ScoreboardList" horizontal-scroller-visibility="Hidden" mode="Vertical" style="flex-grow: 1; width: 100%; min-height: 250px; max-height: 400px; margin-bottom: 20px;">
+                <!-- Cargado dinámicamente -->
+            </ui:ScrollView>
+            <ui:Button text="Back" name="ScoreboardBackButton" class="mode-back-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="LevelSelectorOverlay" class="mode-overlay" style="display: none;">
+        <ui:VisualElement name="LevelSelectorModal" class="mode-modal" style="display: flex; min-width: 800px; max-width: 90%; min-height: 60%;">
+            <ui:Label text="SELECT LEVEL" name="LevelSelectorTitle" class="mode-title" />
+            <ui:ScrollView name="LevelsList" horizontal-scroller-visibility="Hidden" mode="Vertical" style="flex-grow: 1; width: 100%; min-height: 300px; max-height: 500px; margin-bottom: 20px;">
+                <!-- Cargado dinámicamente -->
+            </ui:ScrollView>
+            <ui:Button text="Back" name="LevelSelectorBackButton" class="mode-back-button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="LoadingScreen" picking-mode="Ignore" style="flex-grow: 1; position: absolute; left: 0; top: 0; right: 0; bottom: 0; flex-direction: column; background-color: rgb(203, 201, 190); align-items: center; justify-content: center; align-content: center; display: none;">
+        <ui:VisualElement name="LoadingSpinner" style="width: 240px; height: 240px; background-image: url(&quot;project://database/Assets/_Project/Art/Sprites/spinner.svg&quot;); -unity-background-scale-mode: scale-to-fit;" />
     </ui:VisualElement>
 </ui:UXML>

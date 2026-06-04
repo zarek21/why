@@ -22,9 +22,12 @@ public class GameManager : MonoBehaviour
     private int _currentLives;
     private int _currentFloors = 0;
 
+    public int CurrentFloors => Mathf.Max(0, _currentFloors);
     public int CurrentCombo = 0;
 
     public bool IsGameOver = false; 
+
+    public static LevelData SelectedLevelData;
 
     private void Awake()
     {
@@ -32,6 +35,11 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DOTween.SetTweensCapacity(500, 50);
+
+            if (SelectedLevelData != null)
+            {
+                LevelData = SelectedLevelData;
+            }
 
             // TECLAS EN WEB GL 
             #if UNITY_WEBGL && !UNITY_EDITOR
@@ -42,8 +50,6 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-
     }
     
     private void Start()
@@ -76,12 +82,10 @@ public class GameManager : MonoBehaviour
     {
         if (IsGameOver) return;
 
-        _currentFloors--;
-        UpdateProgressUI();
-        
-        if (_currentFloors < 0)
+        if (_currentFloors > 0)
         {
-            ShowGameOver(false);
+            _currentFloors--;
+            UpdateProgressUI();
         }
     }
 

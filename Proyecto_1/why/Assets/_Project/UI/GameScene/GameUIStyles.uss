@@ -84,16 +84,33 @@
     white-space: normal; 
     max-width: 100%;
     align-self: flex-start;
-    justify-self: flex-start;
-    -unity-text-align: left;
+    -unity-text-align: upper-left;
     -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     padding: 0;
     margin-bottom: 50px;
-    
+    }
+
+/* --- ESTILOS DE LA PANTALLA SIMPLIFICADA DE TUTORIAL --- */
+.tutorial-clock-icon {
+    width: 250px;
+    height: 250px;
+    margin-bottom: 45px;
+    background-image: url("project://database/Assets/_Project/Art/Sprites/clock.svg");
+    -unity-background-scale-mode: scale-to-fit;
+}
+
+#TutorialText {
+    font-size: 80px;
+    color: rgb(59, 61, 63);
+    -unity-text-align: middle-center;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    margin-bottom: 40px;
+    white-space: normal;
+    max-width: 800px;
 }
 
 /* BOTONES COMUNES (Mismo estilo que el menú principal) */
-#StartLevelButton, #RestartButton, #ResumeButton, #QuitButton, #SettingsButton {
+#StartLevelButton, #RestartButton, #ResumeButton, #QuitButton, #SettingsButton, #ResultsQuitButton {
     min-width: 400px;
     font-size: 70px;
     color: rgb(255, 255, 255);
@@ -114,12 +131,12 @@
     transition-property: background-color, scale;
 }
 
-#StartLevelButton:hover, #RestartButton:hover, #ResumeButton:hover, #QuitButton:hover, #SettingsButton:hover {
+#StartLevelButton:hover, #RestartButton:hover, #ResumeButton:hover, #QuitButton:hover, #SettingsButton:hover, #ResultsQuitButton:hover {
     background-color: rgb(69, 7, 36);
     scale: 1.05;
 }
 
-#StartLevelButton:active, #RestartButton:active, #ResumeButton:active, #QuitButton:active, #SettingsButton:active {
+#StartLevelButton:active, #RestartButton:active, #ResumeButton:active, #QuitButton:active, #SettingsButton:active, #ResultsQuitButton:active {
     scale: 1.05;
     background-color: rgb(137, 137, 137);
 }
@@ -153,13 +170,13 @@
     /* 1. Lo sacamos del flujo de flexbox para que no empuje los otros textos */
     position: absolute;
     
-    /* 2. Lo centramos exactamente en medio del #HUDContainer */
+    /* 2. Centrado horizontal exacto (Mitad de 220px) */
     left: 50%;
-    top: 50%; /* Se centrará verticalmente respecto a los textos del HUD */
-    
-    /* 3. Ajuste matemático exacto (Mitad de 220px) */
+    margin: 0;
     margin-left: -110px; 
-    margin-top: -110px;  
+    
+    /* 3. Posición vertical fija debajo del HUD */
+    top: 140px;
     
     /* 4. Forma y bordes */
     width: 220px; 
@@ -167,6 +184,7 @@
     border-radius: 50%; 
     border-color: rgb(255, 255, 255); 
     border-width: 8px; 
+    padding: 0;
     
     /* 5. Colores y alineación */
     background-color: rgb(162, 17, 83); /* Tu guinda/magenta */
@@ -175,12 +193,8 @@
     /* 6. Tipografía */
     font-size: 110px; 
     color: rgb(255, 255, 255); 
-    -unity-font: resource("BebasNeue-Regular");
-    -unity-font-definition: initial;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
     text-shadow: 5px 5px 0px rgba(0, 0, 0, 0.8);
-    
-    /* Lo dejamos visible para que lo veas en el UI Builder (recuerda ocultarlo después) */
-    /* display: none; */ 
     
     /* Animación del Pop */
     transition-duration: 0.15s;
@@ -230,10 +244,6 @@
     
     /* 4. Alineación del texto DENTRO de la caja */
     -unity-text-align: middle-center;
-    
-    /* 5. Sombra de la caja (no del texto) para dar profundidad 3D */
-    /* Sintaxis: offset-x offset-y blur-radius color */
-    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.5);
     
     /* 6. Un borde sutil opcional para definirlo más */
     border-width: 10px;
@@ -319,3 +329,76 @@
 }
 
 /* Los botones ahora comparten estilo con #StartLevelButton arriba */
+
+/* ========================================== */
+/* HIGH SCORE ENTRY                           */
+/* ========================================== */
+
+#HighScoreContainer {
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(59, 61, 63, 0.15);
+    border-radius: 30px;
+    padding: 25px;
+    width: 80%;
+    margin-bottom: 30px;
+}
+
+#HighScoreNameInput {
+    border-width: 0;
+    padding: 0;
+    margin: 0;
+    margin-bottom: 15px;
+    height: 60px;
+    width: 400px;
+}
+
+#HighScoreNameInput .unity-text-field__input {
+    background-color: rgb(255, 255, 255);
+    color: rgb(59, 61, 63);
+    border-color: rgb(59, 61, 63);
+    border-width: 3px;
+    border-radius: 15px;
+    padding: 0 15px;
+    margin: 0;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    font-size: 35px;
+    height: 100%;
+}
+
+#HighScoreNameInput .unity-text-field__placeholder {
+    color: rgba(59, 61, 63, 0.4);
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    font-size: 35px;
+    padding: 0 15px;
+}
+
+#SubmitHighScoreButton {
+    width: 250px;
+    min-width: 250px;
+    height: 50px;
+    font-size: 32px;
+    border-radius: 15px;
+    margin: 0;
+    margin-top: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: rgb(20, 20, 20);
+    color: rgb(255, 255, 255);
+    border-width: 0;
+    -unity-font-style: bold;
+    -unity-font-definition: url("project://database/Assets/BebasNeue-Regular.ttf?fileID=12800000&guid=faf509b83ba24ba4c8d5dc75f1154afd&type=3#BebasNeue-Regular");
+    transition-duration: 0.2s;
+    transition-property: background-color, scale;
+}
+
+#SubmitHighScoreButton:hover {
+    background-color: rgb(50, 50, 50);
+    scale: 1.05;
+}
+
+#SubmitHighScoreButton:active {
+    background-color: rgb(80, 80, 80);
+    scale: 0.98;
+}

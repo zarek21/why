@@ -2,14 +2,19 @@ using UnityEngine;
 using UnityEngine.UIElements; 
 using System.Collections.Generic;
 using MoreMountains.Feedbacks; 
-
+using DG.Tweening;
 
 public class TypingManager : MonoBehaviour
 {
+    private float _wordDisplayScale = 1f;
+    private Tween _scaleTween;
     [Header("Referencias")]
     [SerializeField] private BuildingManager _buildingManager;
     [SerializeField] private LevelData _currentLevelData; 
     [SerializeField] private GameUIManager _uiManager; 
+
+    [Header("Modo Infinito")]
+    [SerializeField] private float _infiniteTimePerWord = 10f; 
 
     private Label _wordDisplay;
     private VisualElement _timerFill;
@@ -47,13 +52,36 @@ public class TypingManager : MonoBehaviour
             _wordDisplay = root.Q<Label>("WordDisplay");
             _timerFill = root.Q<VisualElement>("TimerFill");
             
-            if (_wordDisplay != null) _wordDisplay.enableRichText = true;
+            if (_wordDisplay != null)
+            {
+                _wordDisplay.enableRichText = true;
+                _wordDisplay.style.transformOrigin = new StyleTransformOrigin(
+                    new TransformOrigin(
+                        new Length(50f, LengthUnit.Percent),
+                        new Length(50f, LengthUnit.Percent),
+                        0f
+                    )
+                );
+            }
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.LevelData != null)
+        {
+            _currentLevelData = GameManager.Instance.LevelData;
         }
 
         if (_currentLevelData != null)
         {
-            _maxTime = _currentLevelData.BaseTimePerWord;
-            _masterList = new List<string>(_currentLevelData.WordPool);
+            if (GameManager.SelectedMode == GameMode.Infinite)
+            {
+                _maxTime = _infiniteTimePerWord;
+                _masterList = _currentLevelData.GetAllWordsCombined();
+            }
+            else
+            {
+                _maxTime = _currentLevelData.BaseTimePerWord;
+                _masterList = new List<string>(_currentLevelData.WordPool);
+            }
             
             if (_masterList.Count == 0) _masterList.Add("ERROR");
 
@@ -125,6 +153,8 @@ public class TypingManager : MonoBehaviour
             if (_typeSuccessFeedback != null) _typeSuccessFeedback.PlayFeedbacks();
             
             _typedWord += letter;
+
+            TriggerScaleEffect(letter == ' ');
 
             if (_typedWord.Length == _currentWord.Length)
             {
@@ -205,6 +235,17 @@ public class TypingManager : MonoBehaviour
             _wordBag.RemoveAt(lastIndex);
         }
         
+        if (GameManager.SelectedMode == GameMode.Infinite)
+        {
+            int combo = GameManager.Instance != null ? GameManager.Instance.CurrentCombo : 0;
+            float reduction = (combo / 5) * 0.25f;
+            _maxTime = Mathf.Max(1.5f, _infiniteTimePerWord - reduction);
+        }
+        else if (_currentLevelData != null)
+        {
+            _maxTime = _currentLevelData.BaseTimePerWord;
+        }
+        
         _currentTime = _maxTime; 
         
         UpdateDisplay();
@@ -241,5 +282,42 @@ public class TypingManager : MonoBehaviour
     private void ResetColor()
     {
         if (_wordDisplay != null) _wordDisplay.style.color = new StyleColor(_normalColor);
+    }
+
+    private void TriggerScaleEffect(bool isSpace)
+    {
+        if (!isSpace) return;
+        if (_wordDisplay == null) return;
+
+        _scaleTween?.Kill();
+        _wordDisplayScale = 1f;
+
+        float targetScale = 1.08f;
+        float scaleDuration = 0.15f;
+        float returnDuration = 0.5f;
+
+        _scaleTween = DOTween.To(() => _wordDisplayScale, x => {
+            _wordDisplayScale = x;
+            if (_wordDisplay != null)
+            {
+                _wordDisplay.style.scale = new StyleScale(new Scale(new Vector3(_wordDisplayScale, _wordDisplayScale, 1f)));
+            }
+        }, targetScale, scaleDuration)
+        .SetEase(Ease.OutSine)
+        .OnComplete(() => {
+            _scaleTween = DOTween.To(() => _wordDisplayScale, x => {
+                _wordDisplayScale = x;
+                if (_wordDisplay != null)
+                {
+                    _wordDisplay.style.scale = new StyleScale(new Scale(new Vector3(_wordDisplayScale, _wordDisplayScale, 1f)));
+                }
+            }, 1f, returnDuration)
+            .SetEase(Ease.OutBack);
+        });
+    }
+
+    private void OnDestroy()
+    {
+        _scaleTween?.Kill();
     }
 }

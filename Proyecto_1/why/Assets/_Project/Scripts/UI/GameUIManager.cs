@@ -17,7 +17,14 @@ public class GameUIManager : MonoBehaviour
     private VisualElement _resultsOverlay;
     private Label _resultTitleLabel;
     private Button _restartButton;
+    private Button _resultsQuitButton;
     private static bool _hasSeenTutorial = false; 
+
+    // Scoreboard Elements
+    private Label _resultScoreLabel;
+    private VisualElement _highScoreContainer;
+    private TextField _highScoreNameInput;
+    private Button _submitHighScoreButton;
 
     [Header("Pausa")]
     private VisualElement _pauseOverlay;
@@ -38,6 +45,7 @@ public class GameUIManager : MonoBehaviour
     private int _oldFloors = -1;
     private int _oldLives = -1;
     private int _oldCombo = -1;
+    private float _gameOverTime = -1f;
 
     [Header("Efectos de Sonido UI (Feel)")]
     [Tooltip("Sonido general al hacer clic en botones principales")]
@@ -58,6 +66,13 @@ public class GameUIManager : MonoBehaviour
         _resultsOverlay = root.Q<VisualElement>("ResultsOverlay");
         _resultTitleLabel = root.Q<Label>("ResultTitleLabel");
         _restartButton = root.Q<Button>("RestartButton");
+        _resultsQuitButton = root.Q<Button>("ResultsQuitButton");
+
+        // Scoreboard elements
+        _resultScoreLabel = root.Q<Label>("ResultScoreLabel");
+        _highScoreContainer = root.Q<VisualElement>("HighScoreContainer");
+        _highScoreNameInput = root.Q<TextField>("HighScoreNameInput");
+        _submitHighScoreButton = root.Q<Button>("SubmitHighScoreButton");
 
         _pauseOverlay = root.Q<VisualElement>("PauseOverlay");
         _resumeButton = root.Q<Button>("ResumeButton");
@@ -78,10 +93,12 @@ public class GameUIManager : MonoBehaviour
         if (_resumeButton != null) _resumeButton.clicked += ResumeGame;
         if (_settingsButton != null) _settingsButton.clicked += ShowSettings;
         if (_quitButton != null) _quitButton.clicked += QuitToMenu;
+        if (_resultsQuitButton != null) _resultsQuitButton.clicked += QuitToMenu;
         if (_settingsBackButton != null) _settingsBackButton.clicked += HideSettings;
         if (_pauseFps60 != null) _pauseFps60.clicked += () => SetPauseFPS(60);
         if (_pauseFps75 != null) _pauseFps75.clicked += () => SetPauseFPS(75);
         if (_pauseFps144 != null) _pauseFps144.clicked += () => SetPauseFPS(144);
+        if (_submitHighScoreButton != null) _submitHighScoreButton.clicked += OnSubmitHighScoreClicked;
 
         if (_resultsOverlay != null) _resultsOverlay.style.display = DisplayStyle.None;
         if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
@@ -109,7 +126,9 @@ public class GameUIManager : MonoBehaviour
         if (_resumeButton != null) _resumeButton.clicked -= ResumeGame;
         if (_settingsButton != null) _settingsButton.clicked -= ShowSettings;
         if (_quitButton != null) _quitButton.clicked -= QuitToMenu;
+        if (_resultsQuitButton != null) _resultsQuitButton.clicked -= QuitToMenu;
         if (_settingsBackButton != null) _settingsBackButton.clicked -= HideSettings;
+        if (_submitHighScoreButton != null) _submitHighScoreButton.clicked -= OnSubmitHighScoreClicked;
         // Nota: los lambdas de FPS no se pueden desuscribir, pero se limpian con OnDestroy
     }
 
@@ -117,7 +136,40 @@ public class GameUIManager : MonoBehaviour
     {
         if (!_hasSeenTutorial) return;
         
-        if (_resultsOverlay != null && _resultsOverlay.style.display == DisplayStyle.Flex) return;
+        if (_resultsOverlay != null && _resultsOverlay.style.display == DisplayStyle.Flex)
+        {
+            // Cooldown de 0.5 segundos para evitar reinicio accidental inmediato
+            if (_gameOverTime > 0f && Time.unscaledTime - _gameOverTime < 0.5f)
+            {
+                return;
+            }
+
+            // Permitir reiniciar al presionar Espacio (siempre y cuando el input de High Score no tenga el foco)
+            bool nameInputHasFocus = false;
+            if (_highScoreContainer != null && _highScoreContainer.style.display == DisplayStyle.Flex)
+            {
+                Focusable focused = _uiDocument?.rootVisualElement?.focusController?.focusedElement;
+                if (focused != null && focused is VisualElement visualFocused)
+                {
+                    VisualElement curr = visualFocused;
+                    while (curr != null)
+                    {
+                        if (curr == _highScoreNameInput)
+                        {
+                            nameInputHasFocus = true;
+                            break;
+                        }
+                        curr = curr.parent;
+                    }
+                }
+            }
+
+            if (!nameInputHasFocus && Input.GetKeyDown(KeyCode.Space))
+            {
+                OnRestartClicked();
+            }
+            return;
+        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -204,7 +256,14 @@ public class GameUIManager : MonoBehaviour
     {
         if (_scoreLabel != null && floorsBuilt != _oldFloors) 
         {
-            _scoreLabel.text = $"PISOS: {floorsBuilt} / {targetFloors}";
+            if (GameManager.SelectedMode == GameMode.Infinite)
+            {
+                _scoreLabel.text = $"PISOS: {floorsBuilt}";
+            }
+            else
+            {
+                _scoreLabel.text = $"PISOS: {floorsBuilt} / {targetFloors}";
+            }
             _oldFloors = floorsBuilt;
         }
     }
@@ -255,6 +314,7 @@ public class GameUIManager : MonoBehaviour
         Time.timeScale = 0f;
 
         _resultsOverlay.style.display = DisplayStyle.Flex;
+        _gameOverTime = Time.unscaledTime;
 
         if (isVictory)
         {
@@ -265,6 +325,62 @@ public class GameUIManager : MonoBehaviour
         {
             _resultTitleLabel.text = "SKILL ISSUE";
             _resultTitleLabel.style.color = new StyleColor(Color.black);
+        }
+
+        // Scoreboard integration
+        int finalScore = 0;
+        if (GameManager.Instance != null)
+        {
+            finalScore = GameManager.Instance.CurrentFloors;
+        }
+
+        if (_resultScoreLabel != null)
+        {
+            _resultScoreLabel.text = $"FLOORS BUILT: {finalScore}";
+        }
+
+        string currentMode = GameManager.SelectedMode.ToString();
+
+        if (_highScoreContainer != null && ScoreboardManager.IsHighScore(finalScore, currentMode))
+        {
+            _highScoreContainer.style.display = DisplayStyle.Flex;
+            if (_highScoreNameInput != null)
+            {
+                _highScoreNameInput.value = "";
+            }
+        }
+        else
+        {
+            if (_highScoreContainer != null)
+            {
+                _highScoreContainer.style.display = DisplayStyle.None;
+            }
+        }
+    }
+
+    private void OnSubmitHighScoreClicked()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+
+        int finalScore = 0;
+        if (GameManager.Instance != null)
+        {
+            finalScore = GameManager.Instance.CurrentFloors;
+        }
+
+        string currentMode = GameManager.SelectedMode.ToString();
+        string playerName = "PLAYER";
+
+        if (_highScoreNameInput != null && !string.IsNullOrEmpty(_highScoreNameInput.value))
+        {
+            playerName = _highScoreNameInput.value.Trim();
+        }
+
+        ScoreboardManager.SaveScore(playerName, finalScore, currentMode);
+
+        if (_highScoreContainer != null)
+        {
+            _highScoreContainer.style.display = DisplayStyle.None;
         }
     }
 }
