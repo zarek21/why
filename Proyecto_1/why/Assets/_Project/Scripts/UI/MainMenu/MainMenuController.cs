@@ -186,6 +186,13 @@ public class MainMenuController : MonoBehaviour
         if (_levelSelectorBackButton != null) _levelSelectorBackButton.clicked -= OnLevelSelectorBackClicked;
     }
 
+    private void Start()
+    {
+#if !UNITY_EDITOR && UNITY_WEBGL
+        UnityEngine.WebGLInput.captureAllKeyboardInput = false;
+#endif
+    }
+
     private void Update()
     {
         if (!_isTransitioning && Input.anyKeyDown)

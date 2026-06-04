@@ -420,4 +420,89 @@ public class GameUIManager : MonoBehaviour
             _highScoreContainer.style.display = DisplayStyle.None;
         }
     }
+
+    private void ShowScoreboard()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        if (_scoreboardOverlay != null) _scoreboardOverlay.style.display = DisplayStyle.Flex;
+        RenderScoreboard();
+    }
+
+    private void HideScoreboard()
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        if (_scoreboardOverlay != null) _scoreboardOverlay.style.display = DisplayStyle.None;
+    }
+
+    private void OnTabLevelsClicked()
+    {
+        OnScoreboardTabClicked("Levels");
+    }
+
+    private void OnTabInfiniteClicked()
+    {
+        OnScoreboardTabClicked("Infinite");
+    }
+
+    private void OnScoreboardTabClicked(string mode)
+    {
+        if (_buttonClickFeedback != null) _buttonClickFeedback.PlayFeedbacks();
+        
+        _currentScoreboardTab = mode;
+        if (mode == "Levels")
+        {
+            _tabLevelsButton?.AddToClassList("fps-active");
+            _tabInfiniteButton?.RemoveFromClassList("fps-active");
+        }
+        else
+        {
+            _tabLevelsButton?.RemoveFromClassList("fps-active");
+            _tabInfiniteButton?.AddToClassList("fps-active");
+        }
+        RenderScoreboard();
+    }
+
+    private void RenderScoreboard()
+    {
+        if (_scoreboardList == null) return;
+        _scoreboardList.Clear();
+
+        List<ScoreEntry> allScores = ScoreboardManager.GetScores();
+        List<ScoreEntry> filteredScores = allScores.FindAll(s => s.mode == _currentScoreboardTab);
+
+        filteredScores.Sort((a, b) => b.score.CompareTo(a.score));
+
+        if (filteredScores.Count == 0)
+        {
+            Label noScoresLabel = new Label("NO SCORES YET");
+            noScoresLabel.AddToClassList("scoreboard-rank-name");
+            noScoresLabel.style.unityTextAlign = TextAnchor.MiddleCenter;
+            noScoresLabel.style.marginTop = 50f;
+            _scoreboardList.Add(noScoresLabel);
+            return;
+        }
+
+        for (int i = 0; i < filteredScores.Count; i++)
+        {
+            ScoreEntry entry = filteredScores[i];
+            
+            VisualElement row = new VisualElement();
+            row.AddToClassList("scoreboard-row");
+
+            Label nameLabel = new Label($"{i + 1}. {entry.playerName}");
+            nameLabel.AddToClassList("scoreboard-rank-name");
+
+            Label scoreLabel = new Label($"{entry.score} PISOS");
+            scoreLabel.AddToClassList("scoreboard-score");
+
+            Label dateLabel = new Label(entry.date);
+            dateLabel.AddToClassList("scoreboard-date");
+
+            row.Add(nameLabel);
+            row.Add(scoreLabel);
+            row.Add(dateLabel);
+
+            _scoreboardList.Add(row);
+        }
+    }
 }
