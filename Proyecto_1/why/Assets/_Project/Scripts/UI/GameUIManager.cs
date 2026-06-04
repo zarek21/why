@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement; 
+using System.Collections.Generic;
 using MoreMountains.Feedbacks;
 
 public class GameUIManager : MonoBehaviour
@@ -36,6 +37,15 @@ public class GameUIManager : MonoBehaviour
     // Modal de Settings en pausa
     private VisualElement _settingsOverlay;
     private Button _settingsBackButton;
+
+    // Scoreboard en pausa
+    private Button _scoreboardButton;
+    private VisualElement _scoreboardOverlay;
+    private Button _scoreboardBackButton;
+    private Button _tabLevelsButton;
+    private Button _tabInfiniteButton;
+    private ScrollView _scoreboardList;
+    private string _currentScoreboardTab = "Levels";
 
     // FPS en pausa
     private Button _pauseFps60;
@@ -83,6 +93,14 @@ public class GameUIManager : MonoBehaviour
         _settingsOverlay = root.Q<VisualElement>("SettingsOverlay");
         _settingsBackButton = root.Q<Button>("SettingsBackButton");
 
+        // Scoreboard en pausa
+        _scoreboardButton = root.Q<Button>("ScoreboardButton");
+        _scoreboardOverlay = root.Q<VisualElement>("ScoreboardOverlay");
+        _scoreboardBackButton = root.Q<Button>("ScoreboardBackButton");
+        _tabLevelsButton = root.Q<Button>("TabLevelsButton");
+        _tabInfiniteButton = root.Q<Button>("TabInfiniteButton");
+        _scoreboardList = root.Q<ScrollView>("ScoreboardList");
+
         // FPS en pausa
         _pauseFps60 = root.Q<Button>("PauseFPS60");
         _pauseFps75 = root.Q<Button>("PauseFPS75");
@@ -100,9 +118,16 @@ public class GameUIManager : MonoBehaviour
         if (_pauseFps144 != null) _pauseFps144.clicked += () => SetPauseFPS(144);
         if (_submitHighScoreButton != null) _submitHighScoreButton.clicked += OnSubmitHighScoreClicked;
 
+        // Scoreboard en pausa events
+        if (_scoreboardButton != null) _scoreboardButton.clicked += ShowScoreboard;
+        if (_scoreboardBackButton != null) _scoreboardBackButton.clicked += HideScoreboard;
+        if (_tabLevelsButton != null) _tabLevelsButton.clicked += OnTabLevelsClicked;
+        if (_tabInfiniteButton != null) _tabInfiniteButton.clicked += OnTabInfiniteClicked;
+
         if (_resultsOverlay != null) _resultsOverlay.style.display = DisplayStyle.None;
         if (_pauseOverlay != null) _pauseOverlay.style.display = DisplayStyle.None;
         if (_settingsOverlay != null) _settingsOverlay.style.display = DisplayStyle.None;
+        if (_scoreboardOverlay != null) _scoreboardOverlay.style.display = DisplayStyle.None;
         if (_comboLabel != null) _comboLabel.style.display = DisplayStyle.None;
 
         if (!_hasSeenTutorial)
@@ -129,7 +154,19 @@ public class GameUIManager : MonoBehaviour
         if (_resultsQuitButton != null) _resultsQuitButton.clicked -= QuitToMenu;
         if (_settingsBackButton != null) _settingsBackButton.clicked -= HideSettings;
         if (_submitHighScoreButton != null) _submitHighScoreButton.clicked -= OnSubmitHighScoreClicked;
+
+        if (_scoreboardButton != null) _scoreboardButton.clicked -= ShowScoreboard;
+        if (_scoreboardBackButton != null) _scoreboardBackButton.clicked -= HideScoreboard;
+        if (_tabLevelsButton != null) _tabLevelsButton.clicked -= OnTabLevelsClicked;
+        if (_tabInfiniteButton != null) _tabInfiniteButton.clicked -= OnTabInfiniteClicked;
         // Nota: los lambdas de FPS no se pueden desuscribir, pero se limpian con OnDestroy
+    }
+
+    private void Start()
+    {
+#if !UNITY_EDITOR && UNITY_WEBGL
+        UnityEngine.WebGLInput.captureAllKeyboardInput = false;
+#endif
     }
 
     private void Update()
