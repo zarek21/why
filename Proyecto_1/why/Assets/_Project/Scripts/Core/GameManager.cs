@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
 
             // TECLAS EN WEB GL 
             #if UNITY_WEBGL && !UNITY_EDITOR
-            WebGLInput.captureAllKeyboardInput = true;
+            WebGLInput.captureAllKeyboardInput = false;
             #endif
         }
         else 
